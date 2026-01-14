@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Paycheck Allocation</title>
+<!-- Google Fonts: Manrope -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1fad8a",
+                        "background-light": "#F7F6F4", 
+                        "background-dark": "#21282c",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#2C353B",
+                        "emerald-light": "#E0F2E9",
+                        "emerald-dark": "#132e29",
+                        "text-main": "#0f1a17",
+                        "text-muted": "#539383",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                    boxShadow: {
+                        "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+                        "inner-light": "inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar hide for clean look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Smooth fade for elements */
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-text-main dark:text-gray-100 font-display transition-colors duration-200 antialiased selection:bg-primary selection:text-white">
+<div class="relative mx-auto flex h-full min-h-screen w-full max-w-md flex-col overflow-x-hidden pb-24">
+<!-- Header / Top Bar -->
+<div class="sticky top-0 z-50 flex items-center justify-between bg-background-light/80 dark:bg-background-dark/80 px-6 py-4 backdrop-blur-md">
+<button class="flex size-10 items-center justify-center rounded-full text-text-main hover:bg-black/5 dark:text-white dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h2 class="text-base font-bold tracking-tight opacity-0 transition-opacity duration-300 sm:opacity-100">Allocation</h2>
+<button class="flex size-10 items-center justify-center rounded-full text-text-main hover:bg-black/5 dark:text-white dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[24px]">more_horiz</span>
+</button>
+</div>
+<!-- Main Content -->
+<main class="flex flex-col gap-8 px-6 pt-2">
+<!-- Hero: Amount to Assign -->
+<div class="flex flex-col items-center justify-center gap-1 text-center fade-in-up">
+<p class="text-sm font-medium text-text-muted dark:text-primary/80 uppercase tracking-widest">Inflow</p>
+<h1 class="text-4xl font-extrabold tracking-tight text-text-main dark:text-white sm:text-5xl">$2,400.00</h1>
+<div class="mt-2 flex items-center gap-2 rounded-full bg-white dark:bg-surface-dark px-3 py-1 shadow-sm border border-black/5 dark:border-white/5">
+<span class="material-symbols-outlined text-[16px] text-text-muted">calendar_today</span>
+<span class="text-sm font-semibold text-text-muted">Paycheck #2: Oct 15</span>
+</div>
+</div>
+<!-- Priority Section: Drip Allocations -->
+<div class="fade-in-up delay-100 relative overflow-hidden rounded-2xl bg-emerald-light dark:bg-emerald-dark p-1 shadow-soft ring-1 ring-primary/10 dark:ring-primary/20">
+<!-- Decorative background pattern -->
+<div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/10 blur-3xl"></div>
+<div class="relative flex flex-col gap-4 p-5">
+<!-- Section Header -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary">
+<span class="material-symbols-outlined text-[18px] font-bold">lock</span>
+</div>
+<h3 class="text-lg font-bold text-emerald-900 dark:text-emerald-100">Reserved for Goals</h3>
+</div>
+<span class="text-xs font-bold uppercase tracking-wider text-primary bg-white/60 dark:bg-black/20 px-2 py-1 rounded text-[10px]">Auto-Drip</span>
+</div>
+<!-- Drip Items List -->
+<div class="flex flex-col gap-3">
+<!-- Item 1 -->
+<div class="group flex items-center justify-between rounded-xl bg-white/60 dark:bg-black/20 p-3 transition-transform hover:scale-[1.01] active:scale-[0.99]">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-primary">
+<span class="material-symbols-outlined filled">shield</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-emerald-950 dark:text-emerald-50">Car Insurance</span>
+<span class="text-[11px] font-medium text-emerald-700/70 dark:text-emerald-300/60">Annual • Due Dec 12</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-bold text-emerald-900 dark:text-emerald-100 text-base">-$46.15</span>
+<span class="flex items-center gap-1 text-[10px] text-primary">
+<span class="material-symbols-outlined text-[10px]">check_circle</span>
+                                    Allocated
+                                </span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="group flex items-center justify-between rounded-xl bg-white/60 dark:bg-black/20 p-3 transition-transform hover:scale-[1.01] active:scale-[0.99]">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-primary">
+<span class="material-symbols-outlined filled">home</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-emerald-950 dark:text-emerald-50">Property Tax</span>
+<span class="text-[11px] font-medium text-emerald-700/70 dark:text-emerald-300/60">Sinking Fund</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-bold text-emerald-900 dark:text-emerald-100 text-base">-$28.85</span>
+<span class="flex items-center gap-1 text-[10px] text-primary">
+<span class="material-symbols-outlined text-[10px]">check_circle</span>
+                                    Allocated
+                                </span>
+</div>
+</div>
+</div>
+<!-- Divider -->
+<div class="h-px w-full bg-emerald-900/5 dark:bg-emerald-100/10"></div>
+<!-- Footer Summary -->
+<div class="flex items-center justify-between pt-1">
+<span class="text-sm font-medium text-emerald-800 dark:text-emerald-200">Total Drip Allocation</span>
+<span class="text-lg font-bold text-primary">$75.00</span>
+</div>
+</div>
+</div>
+<!-- Discretionary Section -->
+<div class="flex flex-col gap-4 fade-in-up delay-200">
+<div class="flex items-end justify-between px-1">
+<h3 class="text-lg font-bold text-text-main dark:text-white">Flexible Spending</h3>
+<span class="text-xs font-medium text-text-muted">$600.00 Planned</span>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Flexible Item 1 -->
+<div class="flex items-center justify-between rounded-2xl bg-surface-light dark:bg-surface-dark p-4 shadow-soft">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+<span class="material-symbols-outlined">shopping_cart</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-bold text-text-main dark:text-gray-100">Groceries</span>
+<div class="h-1.5 w-24 rounded-full bg-gray-100 dark:bg-gray-700 mt-1 overflow-hidden">
+<div class="h-full w-2/3 rounded-full bg-yellow-400"></div>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<div class="flex items-center rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-2 border border-transparent focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+<span class="text-xs text-gray-400 mr-1">$</span>
+<input class="w-12 bg-transparent text-right font-bold text-text-main dark:text-white outline-none p-0 border-none focus:ring-0 appearance-none" type="number" value="400"/>
+</div>
+</div>
+</div>
+<!-- Flexible Item 2 -->
+<div class="flex items-center justify-between rounded-2xl bg-surface-light dark:bg-surface-dark p-4 shadow-soft">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-bold text-text-main dark:text-gray-100">Dining Out</span>
+<div class="h-1.5 w-24 rounded-full bg-gray-100 dark:bg-gray-700 mt-1 overflow-hidden">
+<div class="h-full w-1/4 rounded-full bg-purple-400"></div>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<div class="flex items-center rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-2 border border-transparent focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+<span class="text-xs text-gray-400 mr-1">$</span>
+<input class="w-12 bg-transparent text-right font-bold text-text-main dark:text-white outline-none p-0 border-none focus:ring-0 appearance-none" type="number" value="150"/>
+</div>
+</div>
+</div>
+<!-- Flexible Item 3 -->
+<div class="flex items-center justify-between rounded-2xl bg-surface-light dark:bg-surface-dark p-4 shadow-soft">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+<span class="material-symbols-outlined">styler</span>
+</div>
+<div class="flex flex-col">
+<span class="text-base font-bold text-text-main dark:text-gray-100">Clothing</span>
+<div class="h-1.5 w-24 rounded-full bg-gray-100 dark:bg-gray-700 mt-1 overflow-hidden">
+<div class="h-full w-0 rounded-full bg-blue-400"></div>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<div class="flex items-center rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-2 border border-transparent focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+<span class="text-xs text-gray-400 mr-1">$</span>
+<input class="w-12 bg-transparent text-right font-bold text-text-main dark:text-white outline-none p-0 border-none focus:ring-0 appearance-none" type="number" value="50"/>
+</div>
+</div>
+</div>
+<!-- Add New Button -->
+<button class="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 py-3 text-sm font-bold text-gray-400 dark:text-gray-500 hover:border-primary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                        Add Category
+                    </button>
+</div>
+</div>
+<!-- Spacer for floating action button area -->
+<div class="h-12"></div>
+</main>
+<!-- Sticky Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-background-light dark:from-background-dark via-background-light/95 dark:via-background-dark/95 to-transparent pb-8 pt-12 px-6 backdrop-blur-[2px]">
+<div class="mx-auto max-w-md w-full flex flex-col gap-3">
+<div class="flex justify-between px-2 text-sm font-medium">
+<span class="text-text-muted">Remaining to Assign</span>
+<span class="text-primary font-bold">$1,725.00</span>
+</div>
+<button class="relative flex h-14 w-full items-center justify-center overflow-hidden rounded-2xl bg-primary text-white shadow-lg shadow-primary/30 transition-transform active:scale-[0.98] hover:shadow-primary/40">
+<div class="absolute inset-0 bg-white/20 opacity-0 hover:opacity-100 transition-opacity"></div>
+<span class="z-10 text-lg font-bold tracking-wide">Confirm Allocation</span>
+<span class="material-symbols-outlined ml-2 z-10">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

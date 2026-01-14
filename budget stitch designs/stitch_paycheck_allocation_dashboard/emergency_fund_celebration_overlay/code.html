@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Emergency Fund Celebration</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d4a4",
+                        "background-light": "#f9fafa",
+                        "background-dark": "#22252a",
+                        "gold": "#F5C626",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                    boxShadow: {
+                        'glow': '0 0 40px -10px rgba(17, 212, 164, 0.3)',
+                        'badge': '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom styles for 3D perspective and confetti positioning */
+        .perspective-container {
+            perspective: 1000px;
+        }
+        
+        .floating-badge {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Abstract confetti shapes */
+        .confetti {
+            position: absolute;
+            background-color: #11d4a4;
+            opacity: 0.9;
+        }
+        .confetti-triangle {
+            width: 0;
+            height: 0;
+            background-color: transparent;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 16px solid #11d4a4;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased overflow-hidden h-screen w-full relative">
+<!-- LAYER 1: Background Dashboard (Blurred Context) -->
+<!-- This simulates the app behind the overlay -->
+<div class="absolute inset-0 z-0 flex flex-col p-4 opacity-40 blur-[2px] pointer-events-none select-none overflow-hidden bg-[#1a1d21]">
+<!-- Fake Header -->
+<div class="flex justify-between items-center mb-6 mt-2">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-slate-700"></div>
+<div class="h-4 w-32 bg-slate-700 rounded"></div>
+</div>
+<span class="material-symbols-outlined text-slate-500">notifications</span>
+</div>
+<!-- Fake Chart Card -->
+<div class="w-full h-48 bg-[#2a2e33] rounded-xl mb-4 p-4 relative overflow-hidden">
+<div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-emerald-900/20 to-transparent"></div>
+<div class="flex items-end justify-between h-full gap-2 px-2 pb-2">
+<div class="w-full bg-slate-700/50 rounded-t h-[40%]"></div>
+<div class="w-full bg-slate-700/50 rounded-t h-[60%]"></div>
+<div class="w-full bg-slate-700/50 rounded-t h-[30%]"></div>
+<div class="w-full bg-slate-700/50 rounded-t h-[80%]"></div>
+<div class="w-full bg-slate-700/50 rounded-t h-[50%]"></div>
+</div>
+</div>
+<!-- Fake List Items -->
+<div class="space-y-3">
+<div class="h-16 w-full bg-[#2a2e33] rounded-xl flex items-center px-4 gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-700"></div>
+<div class="flex-1 space-y-2">
+<div class="h-3 w-24 bg-slate-700 rounded"></div>
+<div class="h-2 w-16 bg-slate-700/50 rounded"></div>
+</div>
+</div>
+<div class="h-16 w-full bg-[#2a2e33] rounded-xl flex items-center px-4 gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-700"></div>
+<div class="flex-1 space-y-2">
+<div class="h-3 w-24 bg-slate-700 rounded"></div>
+<div class="h-2 w-16 bg-slate-700/50 rounded"></div>
+</div>
+</div>
+<div class="h-16 w-full bg-[#2a2e33] rounded-xl flex items-center px-4 gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-700"></div>
+<div class="flex-1 space-y-2">
+<div class="h-3 w-24 bg-slate-700 rounded"></div>
+<div class="h-2 w-16 bg-slate-700/50 rounded"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- LAYER 2: The Celebration Overlay -->
+<div class="absolute inset-0 z-50 flex flex-col items-center justify-between bg-background-dark/95 backdrop-blur-md px-6 py-8 md:py-12">
+<!-- Top Spacer for Visual Balance -->
+<div class="flex-none h-4"></div>
+<!-- Hero Content Group -->
+<div class="flex-1 flex flex-col items-center justify-center w-full max-w-sm perspective-container">
+<!-- 3D Badge + Particles Container -->
+<div class="relative w-64 h-64 mb-10 flex items-center justify-center">
+<!-- Glowing Aura -->
+<div class="absolute inset-0 bg-primary/20 rounded-full blur-3xl transform scale-110"></div>
+<!-- Confetti: Back Layer (Blurred slightly) -->
+<div class="absolute top-0 right-10 w-3 h-3 bg-primary/50 rotate-45 rounded-sm blur-[1px]"></div>
+<div class="absolute bottom-10 left-4 w-4 h-2 bg-gold/40 rotate-12 rounded-sm blur-[1px]"></div>
+<div class="absolute top-12 left-8 w-2 h-2 bg-primary/30 rounded-full blur-[1px]"></div>
+<!-- Main 3D Badge -->
+<div class="relative z-10 w-48 h-48 floating-badge shadow-badge rounded-full bg-gradient-to-br from-yellow-100 to-yellow-600 p-[2px]">
+<div class="w-full h-full rounded-full overflow-hidden bg-black relative border-4 border-[#4a3b10]">
+<!-- Using an abstract gold shield/badge image -->
+<div class="w-full h-full bg-cover bg-center" data-alt="3D Gold Peace of Mind Badge with metallic sheen" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDRLnA9rpNQ_w5XU17smKnuxsSQ6_hpPFXHQNY5lkRugv1Q0Vo9yc0IcI3wnDU6rpyMWQgchdYWAl2FiQ6o2Kf7KaMNRhufmeyWQwYomEMzyW_eM6JJXMh4N5iPILk6rv50XYmA94HWyntH5ok8uqBqG4rxoPeYr-pxCVZmBGewKX_xpkCJ82RDOpPBxiuUj3r6oTV7SwF9oZVQ_Uu9-aAKI6DIVcs1EjkDpuufwQCThLlkPxrGE6HI7tX2v_G8oY4oJAnZnT4tupbM');">
+<!-- Overlay to make it look like a badge icon -->
+<div class="absolute inset-0 flex items-center justify-center bg-black/30">
+<span class="material-symbols-outlined text-gold text-[80px] drop-shadow-lg" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;">shield_lock</span>
+</div>
+</div>
+<!-- Gloss Effect -->
+<div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent rounded-t-full pointer-events-none"></div>
+</div>
+</div>
+<!-- Confetti: Front Layer (Sharp & Bright) -->
+<!-- Top Right Cluster -->
+<div class="confetti w-3 h-4 rounded-[1px] -rotate-12 top-0 right-16 bg-primary shadow-lg" style="transform: translateZ(20px);"></div>
+<div class="confetti-triangle absolute top-8 right-6 rotate-45" style="border-bottom-color: #F5C626;"></div>
+<!-- Bottom Left Cluster -->
+<div class="confetti w-4 h-2 rounded-[2px] rotate-[120deg] bottom-12 left-10 bg-primary shadow-lg"></div>
+<div class="confetti w-2 h-2 rounded-full bottom-20 left-4 bg-gold"></div>
+<!-- Scattered -->
+<div class="confetti w-2 h-5 rounded-[1px] rotate-[200deg] top-4 left-20 bg-primary/80"></div>
+<div class="confetti w-3 h-3 rounded-sm rotate-12 bottom-6 right-16 bg-primary"></div>
+</div>
+<!-- Typography & Stats -->
+<div class="flex flex-col items-center text-center space-y-4 z-20">
+<h1 class="text-white text-4xl md:text-5xl font-bold tracking-tight leading-tight drop-shadow-lg">
+                    Milestone 1 <br/>Reached!
+                </h1>
+<p class="text-gray-300 text-lg md:text-xl font-medium leading-relaxed max-w-[280px]">
+                    You have a <span class="text-primary font-bold">$1,000</span> safety net. That’s real peace of mind.
+                </p>
+<!-- Stat Pill -->
+<div class="mt-4 inline-flex items-center gap-2 bg-[#2a2e33] border border-gray-700/50 rounded-full px-5 py-2 shadow-lg">
+<span class="material-symbols-outlined text-primary text-xl">history</span>
+<span class="text-gray-300 text-sm font-semibold tracking-wide">BUILT IN 5 PAYCHECKS</span>
+</div>
+</div>
+</div>
+<!-- Footer / CTA -->
+<div class="flex-none w-full max-w-md pt-8 z-20">
+<button class="group relative w-full overflow-hidden rounded-xl bg-primary py-4 px-6 text-background-dark shadow-[0_0_20px_rgba(17,212,164,0.4)] transition-all hover:shadow-[0_0_30px_rgba(17,212,164,0.6)] hover:scale-[1.01] active:scale-[0.98]">
+<!-- Button Shine Effect -->
+<div class="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent z-10"></div>
+<div class="relative z-20 flex items-center justify-center gap-2">
+<span class="text-lg font-bold tracking-wide uppercase">Secure the Fortress</span>
+<span class="material-symbols-outlined text-xl font-bold">lock</span>
+</div>
+</button>
+<div class="mt-4 flex justify-center">
+<p class="text-gray-500 text-xs font-medium">Tap to claim your achievement</p>
+</div>
+</div>
+</div>
+<!-- Animation definition for shimmer -->
+<script>
+        tailwind.config.theme.extend.keyframes = {
+            ...tailwind.config.theme.extend.keyframes,
+            shimmer: {
+                '100%': { transform: 'translateX(100%)' },
+            }
+        }
+    </script>
+</body></html>

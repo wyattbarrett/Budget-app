@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Master Budget Setup</title>
+<!-- Fonts and Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#1fad8a",
+              "primary-dark": "#168066",
+              "background-light": "#f6f8f7",
+              "background-dark": "#12201d",
+              "navy": "#12202E",
+              "slate-custom": "#5C636B",
+              "surface-white": "#FFFFFF",
+              "surface-dark": "#1e2e2a",
+              "border-light": "#e5e7eb",
+              "border-dark": "#2d403a",
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"]
+            },
+            boxShadow: {
+              'soft': '0 2px 8px -2px rgba(18, 32, 46, 0.05)',
+              'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom scrollbar hiding for cleaner mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-navy dark:text-white antialiased transition-colors duration-200">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-50 bg-surface-white/95 dark:bg-surface-dark/95 backdrop-blur-md border-b border-border-light dark:border-border-dark shadow-soft">
+<div class="px-4 py-3 flex items-center justify-between">
+<button class="p-2 -ml-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark/50 text-navy dark:text-white transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-base font-bold text-navy dark:text-white">Master Budget Setup</h1>
+<button class="p-2 -mr-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark/50 text-navy dark:text-white transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<!-- Zero-Based Calculator Bar -->
+<div class="px-4 pb-4">
+<div class="bg-navy dark:bg-black rounded-lg p-3 shadow-lg flex items-center justify-between text-white">
+<div class="flex flex-col items-start border-r border-white/10 pr-4 flex-1">
+<span class="text-[10px] uppercase tracking-wider text-white/60 font-semibold">Est. Income</span>
+<span class="text-sm font-semibold text-white/90">$5,000</span>
+</div>
+<div class="flex flex-col items-center border-r border-white/10 px-4 flex-1">
+<span class="text-[10px] uppercase tracking-wider text-white/60 font-semibold">Budgeted</span>
+<span class="text-sm font-semibold text-white/90">$5,000</span>
+</div>
+<div class="flex flex-col items-end pl-4 flex-1">
+<span class="text-[10px] uppercase tracking-wider text-primary font-bold">Remaining</span>
+<span class="text-lg font-bold text-primary tracking-tight">$0</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Scrollable Content -->
+<main class="flex flex-col w-full pb-24 max-w-md mx-auto">
+<!-- Must-Pay Bills Section -->
+<section class="mt-6 px-4">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="text-sm font-bold uppercase tracking-wide text-slate-custom dark:text-gray-400">Must-Pay Bills</h3>
+<span class="text-xs font-medium text-slate-custom dark:text-gray-500 bg-background-light dark:bg-surface-dark px-2 py-1 rounded-md border border-border-light dark:border-border-dark">3 Items</span>
+</div>
+<div class="bg-surface-white dark:bg-surface-dark rounded-xl shadow-soft border border-border-light dark:border-border-dark divide-y divide-border-light dark:divide-border-dark overflow-hidden">
+<!-- Row: Electric (Auto-Adjusted) -->
+<div class="p-4 flex items-center gap-3 hover:bg-background-light/50 dark:hover:bg-background-dark/30 transition-colors group">
+<div class="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 p-2.5 rounded-lg shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">electric_bolt</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2">
+<p class="font-semibold text-navy dark:text-white truncate">Electric</p>
+<span class="bg-primary/10 text-primary-dark dark:text-primary text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5 whitespace-nowrap">
+<span class="material-symbols-outlined text-[10px]">trending_up</span> Adj. +$20
+                            </span>
+</div>
+<p class="text-xs text-slate-custom dark:text-gray-400 mt-0.5">Due 15th <span class="mx-1 opacity-50">•</span> Was $150</p>
+</div>
+<div class="shrink-0 w-28">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-custom dark:text-gray-400 font-medium text-sm">$</span>
+<input class="w-full text-right bg-background-light dark:bg-background-dark border-border-light dark:border-border-dark focus:ring-2 focus:ring-primary focus:border-primary rounded-md py-2 px-3 pl-6 text-sm font-bold text-navy dark:text-white shadow-input transition-all outline-none" type="text" value="170.00"/>
+</div>
+</div>
+</div>
+<!-- Row: Rent -->
+<div class="p-4 flex items-center gap-3 hover:bg-background-light/50 dark:hover:bg-background-dark/30 transition-colors">
+<div class="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 p-2.5 rounded-lg shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">home</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-semibold text-navy dark:text-white truncate">Rent</p>
+<p class="text-xs text-slate-custom dark:text-gray-400 mt-0.5">Due 1st</p>
+</div>
+<div class="shrink-0 w-28">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-custom dark:text-gray-400 font-medium text-sm">$</span>
+<input class="w-full text-right bg-background-light dark:bg-background-dark border-border-light dark:border-border-dark focus:ring-2 focus:ring-primary focus:border-primary rounded-md py-2 px-3 pl-6 text-sm font-bold text-navy dark:text-white shadow-input transition-all outline-none" type="text" value="2,100.00"/>
+</div>
+</div>
+</div>
+<!-- Row: Car Insurance -->
+<div class="p-4 flex items-center gap-3 hover:bg-background-light/50 dark:hover:bg-background-dark/30 transition-colors">
+<div class="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 p-2.5 rounded-lg shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">directions_car</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-semibold text-navy dark:text-white truncate">Insurance</p>
+<p class="text-xs text-slate-custom dark:text-gray-400 mt-0.5">Due 28th</p>
+</div>
+<div class="shrink-0 w-28">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-custom dark:text-gray-400 font-medium text-sm">$</span>
+<input class="w-full text-right bg-background-light dark:bg-background-dark border-border-light dark:border-border-dark focus:ring-2 focus:ring-primary focus:border-primary rounded-md py-2 px-3 pl-6 text-sm font-bold text-navy dark:text-white shadow-input transition-all outline-none" type="text" value="145.00"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Lifestyle & Cash Accounts Section -->
+<section class="mt-8 px-4">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="text-sm font-bold uppercase tracking-wide text-slate-custom dark:text-gray-400">Lifestyle &amp; Cash Accounts</h3>
+<span class="text-xs font-medium text-slate-custom dark:text-gray-500 bg-background-light dark:bg-surface-dark px-2 py-1 rounded-md border border-border-light dark:border-border-dark">Sinking Funds</span>
+</div>
+<div class="bg-surface-white dark:bg-surface-dark rounded-xl shadow-soft border border-border-light dark:border-border-dark divide-y divide-border-light dark:divide-border-dark overflow-hidden">
+<!-- Row: Clothing -->
+<div class="p-4 flex items-center gap-3 hover:bg-background-light/50 dark:hover:bg-background-dark/30 transition-colors">
+<div class="bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400 p-2.5 rounded-lg shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">checkroom</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-semibold text-navy dark:text-white truncate">Clothing</p>
+<div class="flex items-center gap-2 mt-0.5">
+<p class="text-xs text-slate-custom dark:text-gray-400">Current Balance:</p>
+<span class="text-xs font-medium text-primary">$45.00</span>
+</div>
+</div>
+<div class="shrink-0 w-28">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-custom dark:text-gray-400 font-medium text-sm">$</span>
+<input class="w-full text-right bg-background-light dark:bg-background-dark border-border-light dark:border-border-dark focus:ring-2 focus:ring-primary focus:border-primary rounded-md py-2 px-3 pl-6 text-sm font-bold text-navy dark:text-white shadow-input transition-all outline-none" type="text" value="100.00"/>
+</div>
+</div>
+</div>
+<!-- Row: Haircuts -->
+<div class="p-4 flex items-center gap-3 hover:bg-background-light/50 dark:hover:bg-background-dark/30 transition-colors">
+<div class="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 p-2.5 rounded-lg shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">content_cut</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-semibold text-navy dark:text-white truncate">Haircuts</p>
+<div class="flex items-center gap-2 mt-0.5">
+<p class="text-xs text-slate-custom dark:text-gray-400">Current Balance:</p>
+<span class="text-xs font-medium text-primary">$15.00</span>
+</div>
+</div>
+<div class="shrink-0 w-28">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-custom dark:text-gray-400 font-medium text-sm">$</span>
+<input class="w-full text-right bg-background-light dark:bg-background-dark border-border-light dark:border-border-dark focus:ring-2 focus:ring-primary focus:border-primary rounded-md py-2 px-3 pl-6 text-sm font-bold text-navy dark:text-white shadow-input transition-all outline-none" type="text" value="50.00"/>
+</div>
+</div>
+</div>
+<!-- Row: Groceries -->
+<div class="p-4 flex items-center gap-3 hover:bg-background-light/50 dark:hover:bg-background-dark/30 transition-colors">
+<div class="bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 p-2.5 rounded-lg shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">shopping_basket</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-semibold text-navy dark:text-white truncate">Groceries</p>
+<div class="flex items-center gap-2 mt-0.5">
+<p class="text-xs text-slate-custom dark:text-gray-400">Current Balance:</p>
+<span class="text-xs font-medium text-primary">$0.00</span>
+</div>
+</div>
+<div class="shrink-0 w-28">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-custom dark:text-gray-400 font-medium text-sm">$</span>
+<input class="w-full text-right bg-background-light dark:bg-background-dark border-border-light dark:border-border-dark focus:ring-2 focus:ring-primary focus:border-primary rounded-md py-2 px-3 pl-6 text-sm font-bold text-navy dark:text-white shadow-input transition-all outline-none" type="text" value="600.00"/>
+</div>
+</div>
+</div>
+<!-- Row: Dining Out -->
+<div class="p-4 flex items-center gap-3 hover:bg-background-light/50 dark:hover:bg-background-dark/30 transition-colors">
+<div class="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 p-2.5 rounded-lg shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">restaurant</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-semibold text-navy dark:text-white truncate">Dining Out</p>
+<div class="flex items-center gap-2 mt-0.5">
+<p class="text-xs text-slate-custom dark:text-gray-400">Current Balance:</p>
+<span class="text-xs font-medium text-primary">$120.00</span>
+</div>
+</div>
+<div class="shrink-0 w-28">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-custom dark:text-gray-400 font-medium text-sm">$</span>
+<input class="w-full text-right bg-background-light dark:bg-background-dark border-border-light dark:border-border-dark focus:ring-2 focus:ring-primary focus:border-primary rounded-md py-2 px-3 pl-6 text-sm font-bold text-navy dark:text-white shadow-input transition-all outline-none placeholder:font-normal placeholder:text-gray-400" placeholder="0.00" type="text"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Finalize Button Area -->
+<div class="mt-8 px-4 pb-4">
+<button class="w-full bg-navy hover:bg-black dark:bg-primary dark:hover:bg-primary-dark text-white font-bold text-lg py-4 rounded-xl shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">check_circle</span>
+                Finalize Budget
+             </button>
+<p class="text-center text-xs text-slate-custom dark:text-gray-500 mt-3 pb-8">Review all auto-adjusted amounts before finalizing.</p>
+</div>
+</main>
+<!-- Bottom Tab Bar -->
+<nav class="fixed bottom-0 left-0 w-full bg-surface-white dark:bg-surface-dark border-t border-border-light dark:border-border-dark pb-safe pt-2 px-6 shadow-2xl z-40">
+<div class="flex justify-between items-center max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 p-2 text-primary" href="#">
+<span class="material-symbols-outlined text-[26px] fill-current">account_balance_wallet</span>
+<span class="text-[10px] font-medium">Budget</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-custom dark:text-gray-400 hover:text-navy dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">analytics</span>
+<span class="text-[10px] font-medium">Reports</span>
+</a>
+<div class="relative -top-6">
+<button class="bg-primary hover:bg-primary-dark text-white rounded-full p-4 shadow-xl border-4 border-background-light dark:border-background-dark transition-transform hover:scale-105 active:scale-95">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-custom dark:text-gray-400 hover:text-navy dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">savings</span>
+<span class="text-[10px] font-medium">Goals</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-custom dark:text-gray-400 hover:text-navy dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</div>
+<!-- Safe Area Spacing for iPhone X+ -->
+<div class="h-6 w-full"></div>
+</nav>
+</body></html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fortress Emergency Override Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#cc0000",
+              "background-light": "#fafafa",
+              "background-dark": "#121416",
+              "surface-dark": "#1e2124", 
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"],
+              "body": ["Space Grotesk", "sans-serif"],
+            },
+            borderRadius: {
+              "DEFAULT": "0.125rem", 
+              "lg": "0.25rem", 
+              "xl": "0.5rem", 
+              "full": "0.75rem"
+            },
+            boxShadow: {
+                'glow-red': '0 0 20px rgba(204, 0, 0, 0.25)',
+                'hard': '4px 4px 0px rgba(0,0,0,0.4)',
+                'inset-red': 'inset 0 0 10px rgba(204, 0, 0, 0.1)',
+            },
+            backgroundImage: {
+                'stripes': 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(204, 0, 0, 0.05) 10px, rgba(204, 0, 0, 0.05) 20px)',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: "Space Grotesk", "Noto Sans", sans-serif;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121416; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col items-center justify-center p-6 selection:bg-primary selection:text-white overflow-x-hidden">
+<main class="w-full max-w-[400px] flex flex-col gap-8 relative z-10">
+<!-- Header Component -->
+<header class="flex flex-col items-center text-center gap-6">
+<div class="relative">
+<div class="absolute inset-0 bg-primary blur-2xl opacity-20 rounded-full"></div>
+<div class="relative w-20 h-20 rounded-full bg-[#1A0A0A] border-2 border-primary flex items-center justify-center text-primary shadow-glow-red z-10">
+<span class="material-symbols-outlined text-[40px]">warning</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<h1 class="text-white dark:text-white text-[32px] font-bold leading-[1.1] uppercase tracking-tight">
+                    Is this a true<br/><span class="text-primary">emergency?</span>
+</h1>
+</div>
+</header>
+<!-- Action Panel / Status Indicator -->
+<section class="rounded border border-primary/40 bg-[#1e0f0f] p-4 relative overflow-hidden shadow-inset-red">
+<!-- Background Pattern -->
+<div class="absolute inset-0 bg-stripes pointer-events-none opacity-50"></div>
+<div class="relative z-10 flex items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center w-10 h-10 rounded bg-primary/10 border border-primary/20 text-primary">
+<span class="material-symbols-outlined">shield_lock</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<p class="text-white text-sm font-bold uppercase tracking-wider leading-none">Untouchable Protocol</p>
+<p class="text-primary text-xs font-mono uppercase tracking-widest leading-none">Status: TRIPPED</p>
+</div>
+</div>
+<!-- Visual Toggle State -->
+<div aria-hidden="true" class="flex h-6 w-10 rounded-full bg-primary/20 border border-primary p-0.5 justify-end opacity-80">
+<div class="h-full w-4 rounded-full bg-primary shadow-sm"></div>
+</div>
+</div>
+</section>
+<!-- Body Text -->
+<div class="text-center px-2">
+<p class="text-[#888] text-base font-normal leading-relaxed">
+                You are attempting to access your <span class="text-white font-medium">Fortress Funds</span>. This action breaks your savings streak immediately.
+            </p>
+</div>
+<!-- Input Field Component -->
+<div class="flex flex-col gap-2">
+<label class="flex items-center justify-between text-xs font-mono uppercase tracking-widest text-[#666] mb-1">
+<span>Confirmation Required</span>
+<span class="text-primary animate-pulse">● Awaiting Input</span>
+</label>
+<div class="relative group">
+<div class="absolute inset-0 bg-primary/5 rounded blur opacity-0 group-focus-within:opacity-100 transition-opacity duration-300"></div>
+<input autocapitalize="characters" autocomplete="off" autocorrect="off" class="relative w-full bg-[#1A1C1E] border-2 border-[#333] group-focus-within:border-primary text-white placeholder-[#444] h-16 px-4 text-center text-xl font-bold font-mono uppercase tracking-[0.25em] rounded focus:outline-none focus:ring-0 transition-all shadow-inner" placeholder="E M E R G E N C Y" spellcheck="false" type="text"/>
+</div>
+</div>
+<!-- Button Group -->
+<div class="flex flex-col gap-3 pt-2">
+<button class="relative w-full h-14 bg-primary hover:bg-[#aa0000] text-white font-bold text-lg uppercase tracking-wider rounded shadow-hard active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all flex items-center justify-center gap-3 overflow-hidden group">
+<div class="absolute inset-0 bg-black/10 translate-y-full group-hover:translate-y-0 transition-transform duration-200"></div>
+<span class="material-symbols-outlined relative z-10">lock_open_right</span>
+<span class="relative z-10">Unlock Funds</span>
+</button>
+<button class="w-full h-12 bg-transparent text-[#666] hover:text-white font-medium text-sm uppercase tracking-wide rounded transition-colors flex items-center justify-center hover:bg-white/5">
+                Cancel - Keep Funds Safe
+            </button>
+</div>
+</main>
+<!-- Background texture/noise (simulated with gradient) -->
+<div class="fixed inset-0 z-0 pointer-events-none opacity-5" data-alt="Subtle noise texture overlay" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDT_9DzCWv-otryX4bUIWPIJti3AvOstiM3do5Trua2btvuMLCvqoL8g_YznH68Af5rGCTBwX-fo6aBDplZk3GmNUGi2MTqtLjedl6Lgt90FCL6XMirlayz1NVtFZ2qSaa5AdySPXh7A1WKbySkoWD6dScFFHkvdQqMjSBAlwsblv_vfctIYDRGbfAfUIm2Vie-z6RQvgRxX4CtgmLtxBPfp2JznDeOG4DYHNXYxJGpz6q2iW6NBM3RoQKjp_MTvNBxdWs_dZNqttiu');"></div>
+</body></html>

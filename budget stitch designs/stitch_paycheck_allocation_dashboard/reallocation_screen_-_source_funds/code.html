@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reallocation Screen - Source Funds</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#12a159",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#112119",
+                        "urgent": "#ef4444", // Added for the specific red needs
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom styles for slider thumb feel */
+        .slider-track {
+            background: linear-gradient(90deg, rgba(18, 161, 89, 0.1) 0%, rgba(18, 161, 89, 0.05) 100%);
+        }
+        .shimmer {
+            background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased selection:bg-primary selection:text-white">
+<!-- Mobile Container -->
+<div class="relative mx-auto flex h-full min-h-screen w-full max-w-md flex-col overflow-hidden bg-background-light dark:bg-background-dark shadow-2xl">
+<!-- Top App Bar -->
+<header class="flex items-center justify-between px-6 pt-12 pb-4 bg-background-light dark:bg-background-dark z-20 sticky top-0">
+<h1 class="text-xl font-extrabold tracking-tight">Reallocate Funds</h1>
+<button aria-label="Close" class="group flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 dark:bg-[#1A2C24] transition-colors hover:bg-slate-300 dark:hover:bg-[#233b30]">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white" style="font-size: 24px;">close</span>
+</button>
+</header>
+<!-- Main Content Scroll Area -->
+<main class="flex-1 overflow-y-auto px-4 pb-24">
+<!-- Section: Critical Funding Need -->
+<section class="mt-4 mb-8">
+<div class="flex items-center gap-2 px-2 mb-3">
+<span class="material-symbols-outlined text-urgent filled animate-pulse" style="font-variation-settings: 'FILL' 1;">warning</span>
+<h2 class="text-sm font-bold uppercase tracking-widest text-urgent">Critical Funding Need</h2>
+</div>
+<!-- Alert Card -->
+<div class="relative overflow-hidden rounded-2xl border border-urgent/30 bg-[#2A1215] p-6 shadow-[0_0_20px_rgba(239,68,68,0.15)]">
+<!-- Subtle background pattern for context -->
+<div class="absolute right-0 top-0 -mt-8 -mr-8 h-32 w-32 rounded-full bg-urgent/10 blur-3xl"></div>
+<div class="relative z-10 flex flex-col gap-6">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-urgent/20 text-urgent">
+<span class="material-symbols-outlined" style="font-size: 28px;">bolt</span>
+</div>
+<div>
+<h3 class="text-lg font-bold text-white">Electric Bill</h3>
+<p class="text-sm font-medium text-urgent/80">Due in 2 days</p>
+</div>
+</div>
+<!-- Status Chip -->
+<div class="rounded-full bg-urgent/20 px-3 py-1">
+<span class="text-xs font-bold text-urgent uppercase tracking-wide">Overdue Risk</span>
+</div>
+</div>
+<div class="flex flex-col gap-1 border-t border-urgent/20 pt-4">
+<div class="flex items-baseline justify-between">
+<span class="text-sm text-white/60">Current Shortage</span>
+<span class="text-3xl font-extrabold text-urgent tracking-tight">-$45.00</span>
+</div>
+<div class="h-1.5 w-full rounded-full bg-urgent/20 mt-2 overflow-hidden">
+<div class="h-full w-3/4 rounded-full bg-urgent"></div>
+</div>
+<div class="flex justify-between mt-1 text-xs font-medium text-white/40">
+<span>Paid: $105.00</span>
+<span>Total: $150.00</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Source Funds -->
+<section>
+<h2 class="px-2 mb-4 text-lg font-bold text-white tracking-tight">Source Funds From</h2>
+<div class="space-y-4">
+<!-- Source Card 1: Dining Out -->
+<div class="group relative overflow-hidden rounded-2xl bg-[#1A2C24] border border-white/5 p-5 shadow-lg transition-all hover:border-primary/30">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#244736] text-primary shadow-inner">
+<span class="material-symbols-outlined" style="font-size: 20px;">restaurant</span>
+</div>
+<div>
+<p class="text-base font-bold text-white">Dining Out</p>
+<p class="text-xs text-primary/80">Available Budget</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xl font-bold text-white">$60.00</p>
+<p class="text-xs text-white/40">Resets in 12 days</p>
+</div>
+</div>
+<!-- Swipe Action -->
+<div class="relative h-14 w-full rounded-xl bg-[#112119] p-1.5 shadow-inner flex items-center overflow-hidden border border-white/5">
+<!-- Shimmer effect on track -->
+<div class="absolute inset-0 shimmers opacity-20"></div>
+<!-- Text Label Background -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<span class="text-xs font-bold uppercase tracking-widest text-primary/60 group-hover:text-primary transition-colors">Swipe to Cover $45.00</span>
+</div>
+<!-- Draggable Knob -->
+<div class="relative z-10 h-full aspect-square bg-primary rounded-lg shadow-[0_2px_10px_rgba(18,161,89,0.5)] flex items-center justify-center cursor-grab active:cursor-grabbing transition-transform group-hover:scale-105 active:scale-95">
+<span class="material-symbols-outlined text-white" style="font-size: 24px;">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Source Card 2: Clothing -->
+<div class="group relative overflow-hidden rounded-2xl bg-[#1A2C24] border border-white/5 p-5 shadow-lg transition-all hover:border-primary/30">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#244736] text-primary shadow-inner">
+<span class="material-symbols-outlined" style="font-size: 20px;">checkroom</span>
+</div>
+<div>
+<p class="text-base font-bold text-white">Clothing</p>
+<p class="text-xs text-primary/80">Available Budget</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xl font-bold text-white">$120.00</p>
+<p class="text-xs text-white/40">Resets in 4 days</p>
+</div>
+</div>
+<!-- Swipe Action -->
+<div class="relative h-14 w-full rounded-xl bg-[#112119] p-1.5 shadow-inner flex items-center overflow-hidden border border-white/5">
+<!-- Text Label Background -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<span class="text-xs font-bold uppercase tracking-widest text-primary/60 group-hover:text-primary transition-colors">Swipe to Cover $45.00</span>
+</div>
+<!-- Draggable Knob -->
+<div class="relative z-10 h-full aspect-square bg-primary rounded-lg shadow-[0_2px_10px_rgba(18,161,89,0.5)] flex items-center justify-center cursor-grab active:cursor-grabbing transition-transform group-hover:scale-105 active:scale-95">
+<span class="material-symbols-outlined text-white" style="font-size: 24px;">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Source Card 3: Emergency Fund (Disabled State Example) -->
+<div class="relative overflow-hidden rounded-2xl bg-[#1A2C24]/50 border border-white/5 p-5 opacity-60 grayscale">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-white/40 shadow-inner">
+<span class="material-symbols-outlined" style="font-size: 20px;">savings</span>
+</div>
+<div>
+<p class="text-base font-bold text-white/60">Emergency Fund</p>
+<p class="text-xs text-white/30">Locked</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xl font-bold text-white/60">$1,000.00</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Contextual Footer Gradient -->
+<div class="pointer-events-none absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background-dark to-transparent z-10"></div>
+</div>
+</body></html>

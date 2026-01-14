@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Emergency Fund Fortress</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#30e8ba",
+                        "primary-dark": "#1a9675",
+                        "background-light": "#f3f5f7",
+                        "background-dark": "#0a1129",
+                        "surface-dark": "#1C2541",
+                        "accent-silver": "#B0C4DE",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Space Grotesk", "sans-serif"], 
+                    },
+                    boxShadow: {
+                        'neon': '0 0 15px rgba(48, 232, 186, 0.4)',
+                        'neon-strong': '0 0 25px rgba(48, 232, 186, 0.6)',
+                        'inner-metallic': 'inset 0 2px 4px 0 rgba(255, 255, 255, 0.1)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .liquid-fill {
+            background: linear-gradient(180deg, rgba(48,232,186,0.8) 0%, rgba(20,180,140,0.9) 100%);
+            box-shadow: 0 -5px 20px rgba(48,232,186,0.5);
+            animation: breathe 4s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0% { box-shadow: 0 -5px 20px rgba(48,232,186,0.4); }
+            50% { box-shadow: 0 -5px 30px rgba(48,232,186,0.7); }
+            100% { box-shadow: 0 -5px 20px rgba(48,232,186,0.4); }
+        }
+        .vault-glass {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 50%, rgba(0,0,0,0.1) 100%);
+            backdrop-filter: blur(1px);
+        }
+        .latch-switch:checked + div {
+            transform: translateX(24px);
+            background-color: #30e8ba;
+            box-shadow: 0 0 10px #30e8ba;
+        }
+        .latch-track {
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+        }
+        
+        /* Stripes pattern for the latch area */
+        .striped-bg {
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 5px,
+                rgba(48, 232, 186, 0.05) 5px,
+                rgba(48, 232, 186, 0.05) 10px
+            );
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white selection:bg-primary selection:text-black">
+<div class="relative flex min-h-screen w-full flex-col bg-background-dark overflow-hidden">
+<!-- Background Ambient Glows -->
+<div class="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px] pointer-events-none"></div>
+<div class="absolute bottom-[-10%] right-[-10%] h-[400px] w-[400px] rounded-full bg-blue-900/10 blur-[100px] pointer-events-none"></div>
+<!-- Top App Bar -->
+<div class="relative z-10 flex items-center p-6 pb-2 justify-between">
+<button class="text-accent-silver hover:text-white transition-colors flex size-10 items-center justify-center rounded-full active:bg-white/10">
+<span class="material-symbols-outlined text-[28px]">arrow_back</span>
+</button>
+<h2 class="text-accent-silver text-sm font-bold tracking-[0.2em] uppercase opacity-80">Priority Zero</h2>
+<button class="flex items-center justify-end">
+<span class="text-primary text-sm font-bold tracking-wider hover:text-white transition-colors">CLOSE</span>
+</button>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 flex flex-col items-center justify-start pt-4 px-6 pb-8 overflow-y-auto z-10">
+<!-- Header Title -->
+<h1 class="text-white text-2xl font-bold leading-tight tracking-tight text-center mb-8">
+            Emergency Fund<br/>
+<span class="text-primary drop-shadow-[0_0_8px_rgba(48,232,186,0.5)]">Fortress</span>
+</h1>
+<!-- The Vault Visualization -->
+<div class="relative w-64 h-64 mb-10 group">
+<!-- Outer Ring/Bezel -->
+<div class="absolute inset-0 rounded-full border-4 border-[#1C2541] shadow-[0_0_0_1px_rgba(255,255,255,0.05)] bg-[#0f172a]"></div>
+<!-- Metallic Rim Inner -->
+<div class="absolute inset-2 rounded-full border border-white/10 bg-gradient-to-b from-[#1C2541] to-[#0a1129]"></div>
+<!-- The Liquid Container (Mask) -->
+<div class="absolute inset-4 rounded-full overflow-hidden bg-black/40 shadow-inner">
+<!-- Liquid Fill Level (100% for this state) -->
+<div class="absolute bottom-0 left-0 w-full h-full liquid-fill transition-all duration-1000 ease-in-out">
+<!-- Bubbles/Texture Overlay -->
+<div class="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-repeat mix-blend-overlay"></div>
+</div>
+<!-- Glass Reflection Overlay -->
+<div class="absolute inset-0 vault-glass rounded-full opacity-60"></div>
+<!-- Center Lock Icon -->
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="bg-background-dark/30 backdrop-blur-sm p-4 rounded-full border border-white/10 shadow-lg">
+<span class="material-symbols-outlined text-white text-[48px] drop-shadow-md">lock</span>
+</div>
+</div>
+</div>
+<!-- Status Indicator LED -->
+<div class="absolute bottom-8 right-8 w-4 h-4 rounded-full bg-primary shadow-neon animate-pulse border border-white/20"></div>
+</div>
+<!-- Balance Display -->
+<div class="flex flex-col items-center mb-8 relative">
+<p class="text-accent-silver text-sm font-medium tracking-widest uppercase mb-1 opacity-70">Current Balance</p>
+<div class="text-5xl font-bold text-white tracking-tight flex items-baseline gap-2 drop-shadow-lg">
+<span class="text-primary">$1,000</span>
+<span class="text-2xl text-accent-silver/40 font-light">/ $1,000</span>
+</div>
+<!-- Decorative line -->
+<div class="w-16 h-1 bg-gradient-to-r from-transparent via-primary to-transparent mt-4 opacity-50"></div>
+</div>
+<!-- Fortress Status Card -->
+<div class="w-full max-w-sm mb-6">
+<div class="relative overflow-hidden rounded-xl bg-surface-dark border border-white/5 shadow-xl">
+<!-- Background decorative mesh -->
+<div class="absolute inset-0 opacity-5 striped-bg pointer-events-none"></div>
+<div class="p-5 flex items-center justify-between gap-4 relative z-10">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-sm">shield</span>
+<p class="text-primary text-xs font-bold tracking-wider uppercase">Fortress Secured</p>
+</div>
+<p class="text-white text-lg font-bold leading-tight">Level 1: Starter Fund</p>
+<p class="text-accent-silver text-sm font-light">Complete &amp; Protected</p>
+</div>
+<!-- Progress Circle Mini -->
+<div class="relative size-12 shrink-0 flex items-center justify-center">
+<svg class="size-full -rotate-90 transform" viewbox="0 0 36 36">
+<path class="text-white/10" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-primary drop-shadow-[0_0_4px_rgba(48,232,186,0.8)]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-width="3"></path>
+</svg>
+<span class="material-symbols-outlined text-white text-lg absolute">check</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Panel: Safety Latch -->
+<div class="w-full max-w-sm">
+<div class="relative group rounded-xl bg-[#131b2e] border border-white/5 p-1 shadow-lg overflow-hidden">
+<div class="flex items-center justify-between bg-background-dark/50 rounded-lg p-4 border border-white/5 relative z-10">
+<div class="flex flex-col gap-1">
+<p class="text-white text-base font-bold">Withdrawal Access</p>
+<p class="text-accent-silver text-xs font-medium uppercase tracking-wide">Status: <span class="text-primary">Untouchable</span></p>
+</div>
+<!-- Industrial Switch -->
+<label class="relative flex h-[36px] w-[64px] cursor-pointer items-center rounded bg-[#0a1129] p-1 latch-track border border-white/10 shadow-inner">
+<input checked="" class="latch-switch invisible absolute" disabled="" type="checkbox"/>
+<div class="flex h-[28px] w-[28px] items-center justify-center rounded bg-gray-600 transition-all duration-300 shadow-md border border-white/20">
+<span class="material-symbols-outlined text-black text-[14px] font-bold">lock</span>
+</div>
+</label>
+</div>
+<!-- Bottom detail strip -->
+<div class="bg-[#1C2541] px-4 py-2 flex items-center justify-between border-t border-white/5">
+<span class="text-[10px] text-accent-silver/50 uppercase tracking-widest">Sys.Lock.v4.2</span>
+<span class="text-[10px] text-primary/50 uppercase tracking-widest flex items-center gap-1">
+<span class="w-1 h-1 rounded-full bg-primary"></span> Active
+                    </span>
+</div>
+</div>
+</div>
+<!-- Info Grid -->
+<div class="w-full max-w-sm grid grid-cols-2 gap-3 mt-6">
+<div class="bg-surface-dark/50 border border-white/5 p-4 rounded-lg flex flex-col items-center justify-center text-center">
+<span class="text-accent-silver/60 text-xs uppercase mb-1">Interest Rate</span>
+<span class="text-white font-bold text-lg">4.25% APY</span>
+</div>
+<div class="bg-surface-dark/50 border border-white/5 p-4 rounded-lg flex flex-col items-center justify-center text-center">
+<span class="text-accent-silver/60 text-xs uppercase mb-1">Last Deposit</span>
+<span class="text-primary font-bold text-lg">+$250.00</span>
+</div>
+</div>
+</div>
+<!-- Footer Gradient Fade -->
+<div class="fixed bottom-0 left-0 w-full h-12 bg-gradient-to-t from-background-dark to-transparent pointer-events-none z-20"></div>
+</div>
+</body></html>

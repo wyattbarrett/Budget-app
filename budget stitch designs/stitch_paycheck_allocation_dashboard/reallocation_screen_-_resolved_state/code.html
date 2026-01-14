@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reallocation Resolved</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1f7a5c",
+                        "background-light": "#f1f2f4",
+                        "background-dark": "#1c1f22",
+                        "surface-dark": "#2B3034",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-white h-screen flex flex-col overflow-hidden selection:bg-primary selection:text-white">
+<!-- Top Navigation -->
+<header class="flex items-center p-4 justify-between z-10 shrink-0">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-gray-900 dark:text-white" style="font-size: 24px;">arrow_back</span>
+</button>
+<span class="text-sm font-bold tracking-widest uppercase text-gray-400 dark:text-gray-500">Resolution</span>
+<div class="size-10"></div> <!-- Spacer for balance -->
+</header>
+<!-- Scrollable Content Area -->
+<main class="flex-1 overflow-y-auto px-6 pb-32 w-full max-w-md mx-auto flex flex-col items-center">
+<!-- Spacer for vertical centering -->
+<div class="grow-[0.5] shrink-0"></div>
+<!-- Success Hero -->
+<div class="flex flex-col items-center text-center mb-10 w-full relative">
+<!-- Ambient Glow -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/20 rounded-full blur-3xl -z-10"></div>
+<div class="relative mb-6 group">
+<div class="absolute inset-0 bg-primary rounded-full blur opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
+<div class="relative size-24 bg-primary rounded-full flex items-center justify-center shadow-2xl shadow-primary/30 ring-4 ring-background-light dark:ring-background-dark">
+<span class="material-symbols-outlined text-white" style="font-size: 48px; font-variation-settings: 'wght' 700;">check</span>
+</div>
+</div>
+<h1 class="text-[32px] font-extrabold leading-tight tracking-tight mb-2">Fully Funded!</h1>
+<p class="text-gray-500 dark:text-gray-400 text-base font-medium">Electric Bill is ready for payment.</p>
+</div>
+<!-- Cards Stack -->
+<div class="w-full space-y-3 relative">
+<!-- Connection Line (Visual Connector) -->
+<div class="absolute left-8 top-12 bottom-12 w-0.5 border-l-2 border-dashed border-gray-300 dark:border-gray-700 -z-10"></div>
+<!-- Target Card: Electric Bill (Resolved) -->
+<div class="relative bg-white dark:bg-surface-dark rounded-xl p-5 shadow-lg shadow-black/5 dark:shadow-black/20 border border-gray-100 dark:border-white/5 overflow-hidden">
+<!-- Subtle stripe pattern for texture -->
+<div class="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" data-alt="Abstract gradient fade"></div>
+<div class="flex items-center justify-between relative z-10">
+<div class="flex items-center gap-4">
+<div class="size-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+<span class="material-symbols-outlined text-primary fill-1" style="font-size: 24px;">bolt</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-semibold text-primary uppercase tracking-wider mb-0.5">Target</span>
+<h3 class="text-lg font-bold leading-none">Electric Bill</h3>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xl font-bold text-primary tabular-nums tracking-tight">$120.00</p>
+<div class="flex items-center justify-end gap-1 mt-0.5">
+<span class="material-symbols-outlined text-primary" style="font-size: 14px;">verified</span>
+<span class="text-[10px] font-bold text-primary uppercase tracking-wide">Ready</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Source Card: Dining Out (Impact) -->
+<div class="relative bg-white dark:bg-surface-dark rounded-xl p-5 shadow-sm border border-gray-100 dark:border-white/5 opacity-90">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="size-12 rounded-full bg-orange-500/10 flex items-center justify-center shrink-0 border border-orange-500/20">
+<span class="material-symbols-outlined text-orange-600 dark:text-orange-400" style="font-size: 24px;">restaurant</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Source</span>
+<h3 class="text-lg font-bold leading-none text-gray-700 dark:text-gray-200">Dining Out</h3>
+</div>
+</div>
+</div>
+<!-- The Math / Transition Visual -->
+<div class="bg-gray-50 dark:bg-black/20 rounded-lg p-3 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-gray-400 font-bold mb-1">Was</span>
+<span class="text-gray-400 font-medium text-lg line-through decoration-gray-400/50 decoration-2 tabular-nums">$60.00</span>
+</div>
+<div class="flex flex-col items-center px-2 text-primary/60">
+<span class="material-symbols-outlined" style="font-size: 20px;">arrow_forward</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase text-primary font-bold mb-1">Now</span>
+<span class="text-gray-900 dark:text-white font-bold text-xl tabular-nums">$15.00</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Spacer for vertical centering -->
+<div class="grow shrink-0"></div>
+</main>
+<!-- Sticky Footer Action -->
+<footer class="fixed bottom-0 left-0 w-full p-6 bg-gradient-to-t from-background-light via-background-light to-transparent dark:from-background-dark dark:via-background-dark dark:to-transparent z-20 pt-16">
+<button class="group w-full bg-primary text-white font-bold text-lg h-14 rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 ring-1 ring-white/10">
+<span>Back to Dashboard</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" style="font-size: 20px;">arrow_forward</span>
+</button>
+</footer>
+</body></html>

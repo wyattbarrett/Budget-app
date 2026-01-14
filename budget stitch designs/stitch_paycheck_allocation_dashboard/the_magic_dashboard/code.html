@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Magic Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#1f7a5c",
+                "background-light": "#f6f8f7",
+                "background-dark": "#17191c", // Updated to match prompt's Deep Charcoal
+                "surface-dark": "#2C3036", // Soft Slate from prompt
+                "surface-highlight": "#353a41",
+                "danger": "#CC2E2E",
+                "muted-text": "#51565F",
+                "ghost-text": "#6B7280",
+              },
+              fontFamily: {
+                "display": ["Manrope", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+              boxShadow: {
+                'glow-primary': '0 0 20px -5px rgba(31, 122, 92, 0.3)',
+                'glow-danger': '0 0 15px -5px rgba(204, 46, 46, 0.4)',
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex justify-center w-full">
+<!-- Mobile Frame -->
+<div class="relative flex h-full min-h-screen w-full max-w-md flex-col overflow-hidden bg-background-light dark:bg-background-dark shadow-2xl">
+<!-- Top App Bar -->
+<header class="flex items-center justify-between px-6 py-5 z-20 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md sticky top-0">
+<div class="flex items-center gap-3">
+<div class="flex items-center justify-center size-10 rounded-full bg-surface-dark border border-white/5">
+<span class="material-symbols-outlined text-white text-[20px]">menu</span>
+</div>
+</div>
+<h1 class="text-white text-lg font-extrabold tracking-tight">Magic Dashboard</h1>
+<div class="flex items-center gap-3">
+<div class="relative flex items-center justify-center size-10 rounded-full bg-surface-dark border border-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-white text-[20px]">notifications</span>
+<div class="absolute top-2 right-2 size-2 bg-primary rounded-full border border-surface-dark"></div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col px-4 pb-24 overflow-y-auto space-y-6">
+<!-- Paycheck Header Card -->
+<div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1d2f29] to-[#131f1b] p-6 shadow-lg border border-white/5 group">
+<!-- Abstract Texture Background -->
+<div class="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-repeat" data-alt="Subtle geometric cube pattern texture"></div>
+<div class="relative z-10 flex flex-col gap-1">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-primary font-bold text-sm tracking-wider uppercase mb-1">Current Paycheck</p>
+<h2 class="text-white text-3xl font-bold font-display tracking-tight">$0.00</h2>
+<p class="text-gray-400 text-sm font-medium mt-1">Left to Budget</p>
+</div>
+<div class="bg-white/5 backdrop-blur-sm px-3 py-1 rounded-lg border border-white/5">
+<p class="text-white text-xs font-semibold">Oct 1 - Oct 15</p>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+<span class="text-gray-300 text-sm">All funds assigned</span>
+</div>
+<button class="text-xs font-bold text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition-colors">
+                            View History
+                         </button>
+</div>
+</div>
+</div>
+<!-- Urgent Section -->
+<div class="space-y-3">
+<h3 class="text-white/60 text-xs font-bold uppercase tracking-widest px-1">Attention Needed</h3>
+<!-- Urgent Item: Electric Bill -->
+<div class="relative flex flex-col gap-4 rounded-xl bg-surface-dark p-4 shadow-glow-danger border border-danger/30">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center rounded-xl bg-danger/10 shrink-0 size-12 border border-danger/20 text-danger">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div>
+<h4 class="text-white text-base font-bold leading-tight">Electric Bill</h4>
+<p class="text-danger text-sm font-medium mt-0.5">Due in 2 days</p>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-white font-mono font-bold">$142.50</span>
+<span class="text-white/40 text-xs">Target: $240.00</span>
+</div>
+</div>
+<!-- Progress Bar (Urgent/Red tinted) -->
+<div class="w-full bg-black/40 rounded-full h-2 overflow-hidden">
+<div class="bg-danger/80 h-full rounded-full w-[60%]"></div>
+</div>
+<!-- Action Button -->
+<button class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-danger/40 bg-danger/10 text-danger font-bold text-sm hover:bg-danger/20 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+                        Action Required: Fund $97.50
+                    </button>
+</div>
+</div>
+<!-- Active Budget Section -->
+<div class="space-y-3">
+<h3 class="text-white/60 text-xs font-bold uppercase tracking-widest px-1">Funding Priorities</h3>
+<!-- Active Item: Groceries -->
+<div class="group flex flex-col gap-3 rounded-xl bg-surface-dark p-4 shadow-lg border border-white/5 hover:border-primary/30 transition-colors">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12 text-primary group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined">shopping_cart</span>
+</div>
+<div>
+<h4 class="text-white text-base font-bold">Groceries</h4>
+<p class="text-gray-400 text-xs mt-0.5">Weekly essentials</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-white font-mono font-bold text-lg">$250</p>
+<p class="text-white/40 text-xs font-medium">of $400.00</p>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="relative h-3 w-full rounded-full bg-black/40 overflow-hidden">
+<div class="absolute top-0 left-0 h-full bg-primary rounded-full w-[62.5%] shadow-glow-primary"></div>
+</div>
+</div>
+<!-- Active Item: Fuel (Low Funding) -->
+<div class="group flex flex-col gap-3 rounded-xl bg-surface-dark p-4 shadow-lg border border-white/5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center rounded-xl bg-surface-highlight shrink-0 size-12 text-white/70">
+<span class="material-symbols-outlined">local_gas_station</span>
+</div>
+<div>
+<h4 class="text-white text-base font-bold">Fuel</h4>
+<p class="text-gray-400 text-xs mt-0.5">Commute</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-white font-mono font-bold text-lg">$0</p>
+<p class="text-white/40 text-xs font-medium">of $60.00</p>
+</div>
+</div>
+<!-- Progress Bar (Empty) -->
+<div class="relative h-3 w-full rounded-full bg-black/40 overflow-hidden">
+<div class="absolute top-0 left-0 h-full bg-primary rounded-full w-[0%]"></div>
+</div>
+</div>
+</div>
+<!-- Ghosted Section -->
+<div class="space-y-3 pt-2">
+<h3 class="text-muted-text text-xs font-bold uppercase tracking-widest px-1">Covered &amp; Completed</h3>
+<!-- Ghosted Item: Rent -->
+<div class="flex items-center justify-between rounded-xl bg-surface-dark/40 p-4 border border-white/5 opacity-70 grayscale-[0.5]">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center rounded-xl bg-surface-highlight/50 shrink-0 size-10 text-muted-text">
+<span class="material-symbols-outlined text-[20px]">home</span>
+</div>
+<div>
+<h4 class="text-muted-text text-base font-bold line-through decoration-white/20">Rent</h4>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-primary text-[14px]">check_circle</span>
+<p class="text-muted-text text-xs font-medium">Covered by last check</p>
+</div>
+</div>
+</div>
+<div class="px-3 py-1 rounded-full bg-surface-highlight/30 border border-white/5">
+<span class="text-muted-text text-xs font-bold">Paid</span>
+</div>
+</div>
+<!-- Ghosted Item: Internet -->
+<div class="flex items-center justify-between rounded-xl bg-surface-dark/40 p-4 border border-white/5 opacity-70 grayscale-[0.5]">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center rounded-xl bg-surface-highlight/50 shrink-0 size-10 text-muted-text">
+<span class="material-symbols-outlined text-[20px]">router</span>
+</div>
+<div>
+<h4 class="text-muted-text text-base font-bold line-through decoration-white/20">Internet</h4>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-primary text-[14px]">check_circle</span>
+<p class="text-muted-text text-xs font-medium">Auto-pay set</p>
+</div>
+</div>
+</div>
+<div class="px-3 py-1 rounded-full bg-surface-highlight/30 border border-white/5">
+<span class="text-muted-text text-xs font-bold">Paid</span>
+</div>
+</div>
+</div>
+<!-- Bottom Spacer -->
+<div class="h-8"></div>
+</main>
+<!-- Floating Action Button (FAB) -->
+<div class="absolute bottom-24 right-6 z-30">
+<button class="flex items-center justify-center size-14 rounded-2xl bg-primary text-white shadow-lg shadow-primary/30 hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+</div>
+<!-- Bottom Navigation -->
+<nav class="absolute bottom-0 w-full h-[88px] bg-surface-dark/95 backdrop-blur-lg border-t border-white/5 pb-5 pt-3 z-40">
+<div class="grid grid-cols-4 h-full">
+<button class="flex flex-col items-center justify-center gap-1 group">
+<span class="material-symbols-outlined text-primary bg-primary/10 px-4 py-1 rounded-full text-[24px]">dashboard</span>
+<span class="text-[10px] font-bold text-primary">Magic</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 group">
+<span class="material-symbols-outlined text-gray-500 group-hover:text-white transition-colors text-[24px]">account_balance_wallet</span>
+<span class="text-[10px] font-medium text-gray-500 group-hover:text-white transition-colors">Budget</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 group">
+<span class="material-symbols-outlined text-gray-500 group-hover:text-white transition-colors text-[24px]">pie_chart</span>
+<span class="text-[10px] font-medium text-gray-500 group-hover:text-white transition-colors">Reports</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 group">
+<span class="material-symbols-outlined text-gray-500 group-hover:text-white transition-colors text-[24px]">settings</span>
+<span class="text-[10px] font-medium text-gray-500 group-hover:text-white transition-colors">Settings</span>
+</button>
+</div>
+</nav>
+</div>
+</body></html>
