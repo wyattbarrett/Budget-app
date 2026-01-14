@@ -22,6 +22,9 @@ To run the application locally using Docker:
 *Note: This creates a production-like build served via Nginx.*
 
 ### 2. Allocation Engine
+- **Smart Bill Detection**: 
+  - **Required**: Bills due strictly between your current and next paycheck are highlighted as priority.
+  - **Ghosted**: Future bills (due after next payday) appear faded (40% opacity) to reduce cognitive load.
 - **Priority Logic**: Money is routed in a specific order:
   1.  **Fixed Bills** (Must Pays)
   2.  **Annual Drips** (Sinking Funds capable of auto-piloting yearly expenses)
@@ -29,8 +32,9 @@ To run the application locally using Docker:
   4.  **Emergency Fund** (If below goal)
   5.  **Snowball Power** (Surplus cash to debts)
   6.  **Lifestyle Funds** (Discretionary)
+- **History Tracking**: Every confirmed allocation creates a permanent snapshot of your financial state in `paycheck_history`.
 
-### 3. specialty Modules (Baby Steps)
+### 3. Specialty Modules (Baby Steps)
 - **🛡️ Emergency Fund Fortress (Baby Step 1)**:
   - A secure "Vault" UI for your $1,000 starter fund.
   - **High-Friction Unlock**: Requires typing "EMERGENCY" to withdraw.
@@ -46,8 +50,8 @@ To run the application locally using Docker:
 - **Reallocation**: "Whack-a-Mole" style money movement to cover overspending instantly.
 
 ### 5. Collaboration & Security
-- **Shared Budgeting**: Invite partners via email to view and manage the budget together.
-- **Role-Based Access**: Secure Firestore rules ensure only invited collaborators can access your data.
+- **Shared Budgeting**: Invite partners by email directly from the **Settings** menu.
+- **Role-Based Access**: Secure Firestore rules ensure access is granted only to the owner and listed collaborators.
 - **Account Control**: Full profile management and a high-friction "Delete Account" feature for complete data removal.
 
 ## 🛠️ Tech Stack
@@ -81,7 +85,15 @@ To run the application locally using Docker:
 
 3. **Configure Environment**
    - Ensure your `.firebaserc` matches your project ID.
-   - Update `src/firebase.ts` with your Firebase config keys.
+   - Create a `.env.local` file with your Firebase config keys:
+     ```
+     VITE_FIREBASE_API_KEY=your_key
+     VITE_FIREBASE_AUTH_DOMAIN=your_domain
+     VITE_FIREBASE_PROJECT_ID=your_project_id
+     VITE_FIREBASE_STORAGE_BUCKET=your_bucket
+     VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+     VITE_FIREBASE_APP_ID=your_app_id
+     ```
 
 4. **Run Locally**
    ```bash

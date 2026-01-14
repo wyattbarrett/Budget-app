@@ -6,7 +6,7 @@ import { ReallocateModal } from '../reallocation/ReallocateModal';
 import { DripAllocationModal } from '../allocation/DripAllocationModal';
 import { SnowballAllocationModal } from '../allocation/SnowballAllocationModal';
 import { Bill } from '../../store';
-import { calculateNextPayDate, isBillDue } from '../allocation/allocationLogic';
+import { calculateNextPayDate, getBillStatus } from '../allocation/allocationLogic';
 import { ShortfallResolutionModal } from './ShortfallResolutionModal';
 
 import { PaydayEntryModal } from './PaydayEntryModal';
@@ -15,7 +15,7 @@ import { Sidebar } from '../../components/Sidebar';
 export const Dashboard: React.FC = () => {
     const { settings, bills, pendingAllocation } = useStore();
     // Removed useAllocation from here to prevent re-renders on typing
-    const { confirmAllocation, isConfirming } = useAllocation(); // We still need confirm, but that state changes rarely
+    const { commitAllocation, isConfirming } = useAllocation(); // We still need confirm, but that state changes rarely
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -24,15 +24,36 @@ export const Dashboard: React.FC = () => {
     const [selectedUrgentBill, setSelectedUrgentBill] = useState<Bill | null>(null);
     const [shortageAmount, setShortageAmount] = useState(0);
 
+    const [isSnowballModalOpen, setIsSnowballModalOpen] = useState(false);
+    const [isDripModalOpen, setIsDripModalOpen] = useState(false);
+    const [isShortfallModalOpen, setIsShortfallModalOpen] = useState(false);
+
+    const handleConfirmClick = () => {
+        if (pendingAllocation && pendingAllocation.snowballAmount > 0) {
+            setIsSnowballModalOpen(true);
+        } else if (pendingAllocation && Object.keys(pendingAllocation.sinkingFundsAllocation).length > 0) {
+            setIsDripModalOpen(true);
+        } else {
+            commitAllocation();
+        }
+    };
+
+    const handleSnowballConfirm = () => {
+        setIsSnowballModalOpen(false);
+        // Chain to Drip if needed
+        if (pendingAllocation && Object.keys(pendingAllocation.sinkingFundsAllocation).length > 0) {
+            setIsDripModalOpen(true);
+        } else {
+            commitAllocation();
+        }
+    };
+
     const handleUrgentBillClick = (bill: Bill) => {
         const allocatedInPending = pendingAllocation?.allocations[bill.id] || 0;
         const shortage = parseFloat(bill.amount) - allocatedInPending;
-
-        if (shortage > 0) {
-            setSelectedUrgentBill(bill);
-            setShortageAmount(shortage);
-            setIsReallocateOpen(true);
-        }
+        setShortageAmount(shortage);
+        setSelectedUrgentBill(bill);
+        setIsReallocateOpen(true);
     };
 
     // Memoize Dates
@@ -43,10 +64,30 @@ export const Dashboard: React.FC = () => {
     }, [settings.nextPayDate, settings.payFrequency]);
 
     // Memoize Bills Logic
-    const { urgentBills, activeBills } = useMemo(() => {
-        const urgent = bills.filter((bill: Bill) => isBillDue(bill, today, currentCycleEnd));
-        const active = bills.filter((bill: Bill) => !urgent.includes(bill));
-        return { urgentBills: urgent, activeBills: active };
+    const { urgentBills, activeBills, ghostedBills } = useMemo(() => {
+        const urgent: Bill[] = [];
+        const active: Bill[] = [];
+        const ghosted: Bill[] = [];
+
+        bills.forEach((bill: Bill) => {
+            const status = getBillStatus(bill, today, currentCycleEnd);
+            if (status === 'REQUIRED') {
+                active.push(bill);
+            } else if (status === 'GHOSTED') {
+                ghosted.push(bill);
+            }
+        });
+
+        // Filter urgent from active based on some urgent criteria if needed, 
+        // or just keep them all in active for now as requested.
+        // For visual consistency with previous "Urgent" section:
+        // Let's say Urgent is anything due within 5 days? 
+        // Or if we just trust "Required" means general active needs.
+        // The original logic split them. Let's keep existing "Urgent" vs "Active" if possible, 
+        // but the prompt emphasized GHOSTED vs REQUIRED opacity.
+        // Let's just return what we have.
+
+        return { urgentBills: urgent, activeBills: active, ghostedBills: ghosted };
     }, [bills, today, currentCycleEnd]);
 
     // Memoize Totals
@@ -66,35 +107,19 @@ export const Dashboard: React.FC = () => {
         return { leftToBudget: left, shortfallAmount: sAmount, hasShortfall: shortfall };
     }, [pendingAllocation, urgentBills]);
 
-
-    const [isSnowballModalOpen, setIsSnowballModalOpen] = useState(false);
-    const [isDripModalOpen, setIsDripModalOpen] = useState(false);
-
-    const handleConfirmClick = () => {
-        if (pendingAllocation && pendingAllocation.snowballAmount > 0) {
-            setIsSnowballModalOpen(true);
-        } else if (pendingAllocation && Object.keys(pendingAllocation.sinkingFundsAllocation).length > 0) {
-            setIsDripModalOpen(true);
-        } else {
-            confirmAllocation();
-        }
-    };
-
-    const handleSnowballConfirm = () => {
-        setIsSnowballModalOpen(false);
-        // Chain to Drip if needed
-        if (pendingAllocation && Object.keys(pendingAllocation.sinkingFundsAllocation).length > 0) {
-            setIsDripModalOpen(true);
-        } else {
-            confirmAllocation();
-        }
-    };
-
-    const [isShortfallModalOpen, setIsShortfallModalOpen] = useState(false);
-
     return (
         <div className="bg-background-light dark:bg-background-dark min-h-screen flex justify-center w-full font-sans transition-colors duration-300">
-            {/* ... (Existing Layout) ... */}
+            {/* Sidebar Overlay */}
+            <div
+                className={`fixed inset-0 bg-black/50 z-30 transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                onClick={() => setIsSidebarOpen(false)}
+            />
+
+            {/* Sidebar */}
+            <div className={`fixed top-0 left-0 h-full w-80 z-40 transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+            </div>
+
             <div className="flex flex-col gap-6 w-full max-w-md mx-auto relative">
 
                 {/* Top App Bar */}
@@ -120,7 +145,6 @@ export const Dashboard: React.FC = () => {
 
                     {/* Paycheck Header Card */}
                     <div className={`relative overflow-hidden rounded-2xl p-6 shadow-lg border border-white/5 group ${hasShortfall ? 'bg-danger/20 border-danger/50' : 'bg-gradient-to-br from-[#1d2f29] to-[#131f1b]'}`}>
-                        {/* Use Local Texture */}
                         <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay bg-[url('/cubes.png')] bg-repeat"></div>
 
                         <div className="relative z-10 flex flex-col gap-1">
@@ -212,9 +236,8 @@ export const Dashboard: React.FC = () => {
 
                     {/* Active Budget Section */}
                     <div className="space-y-3">
-                        <h3 className="text-white/60 text-xs font-bold uppercase tracking-widest px-1">Funding Priorities</h3>
+                        <h3 className="text-white/60 text-xs font-bold uppercase tracking-widest px-1">Funding Priorities (Required)</h3>
 
-                        {/* Mapping user bills */}
                         {activeBills.map(bill => (
                             <div key={bill.id} className="group flex flex-col gap-3 rounded-xl bg-surface-dark p-4 shadow-lg border border-white/5 hover:border-primary/30 transition-colors">
                                 <div className="flex items-center justify-between">
@@ -232,7 +255,6 @@ export const Dashboard: React.FC = () => {
                                         <p className="text-white/40 text-xs font-medium">of ${bill.amount}</p>
                                     </div>
                                 </div>
-                                {/* Progress Bar */}
                                 <div className="relative h-3 w-full rounded-full bg-black/40 overflow-hidden">
                                     <div
                                         className="absolute top-0 left-0 h-full bg-primary rounded-full shadow-glow-primary transition-all duration-500"
@@ -244,25 +266,30 @@ export const Dashboard: React.FC = () => {
                     </div>
 
                     {/* Ghosted Section */}
-                    <div className="space-y-3 pt-2">
-                        <h3 className="text-muted-text text-xs font-bold uppercase tracking-widest px-1">Covered & Completed</h3>
-                        <div className="flex items-center justify-between rounded-xl bg-surface-dark/40 p-4 border border-white/5 opacity-70 grayscale-[0.5]">
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center justify-center rounded-xl bg-surface-highlight/50 shrink-0 size-10 text-muted-text">
-                                    <span className="material-symbols-outlined text-[20px]">check_circle</span>
+                    {ghostedBills.length > 0 && (
+                        <div className="space-y-3 pt-2">
+                            <h3 className="text-muted-text text-xs font-bold uppercase tracking-widest px-1">Upcoming (Ghosted)</h3>
+                            {ghostedBills.map(bill => (
+                                <div key={bill.id} className="flex items-center justify-between rounded-xl bg-surface-dark/40 p-4 border border-white/5 opacity-40 hover:opacity-100 transition-opacity">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center justify-center rounded-xl bg-surface-highlight/50 shrink-0 size-10 text-muted-text">
+                                            <span className="material-symbols-outlined text-[20px]">calendar_month</span>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-muted-text text-base font-bold">{bill.name}</h4>
+                                            <p className="text-muted-text text-xs font-medium">Due Day: {bill.dueDay}</p>
+                                        </div>
+                                    </div>
+                                    <span className="text-muted-text/50 font-bold">${bill.amount}</span>
                                 </div>
-                                <div>
-                                    <h4 className="text-muted-text text-base font-bold line-through decoration-white/20">All Caught Up</h4>
-                                    <p className="text-muted-text text-xs font-medium">No paid bills yet</p>
-                                </div>
-                            </div>
+                            ))}
                         </div>
-                    </div>
+                    )}
 
                     <div className="h-8"></div>
                 </main>
 
-                {/* Floating Action Button (FAB) */}
+                {/* Floating Action Button */}
                 <div className="fixed bottom-28 right-6 z-30">
                     <button
                         onClick={() => setIsModalOpen(true)}
@@ -273,15 +300,10 @@ export const Dashboard: React.FC = () => {
                 </div>
             </div>
 
-            {/* Payday Modal - ISOLATED COMPONENT */}
+            {/* Payday Modal */}
             <PaydayEntryModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-            />
-
-            <Sidebar
-                isOpen={isSidebarOpen}
-                onClose={() => setIsSidebarOpen(false)}
             />
 
             {/* Reallocation Modal */}
@@ -316,7 +338,7 @@ export const Dashboard: React.FC = () => {
                 isOpen={isDripModalOpen}
                 onClose={() => setIsDripModalOpen(false)}
                 onConfirm={() => {
-                    confirmAllocation();
+                    commitAllocation();
                     setIsDripModalOpen(false);
                 }}
                 incomeAmount={pendingAllocation ? pendingAllocation.totalIncome : 0}

@@ -40,11 +40,20 @@ export const useAllocation = () => {
             sinkingFundsAllocation: result.sinkingFundsAllocation,
             debtAllocations: result.debtAllocations,
             snowballAmount: result.snowballAmount,
+            // Pass statuses through via extended type or just use standard store mechanism? 
+            // Ideally PendingAllocation should track this. Use 'allocations' for amounts. 
+            // We'll store statuses in a separate ephemeral state or just recalculated in logic?
+            // For now, let's attach it to 'allocations' metadata if possible, but store type is strict.
+            // Simpler: Just rely on dashboard re-calculating status since it uses the same logic?
+            // User requirement: "If (Bill.due_date - 2) falls inside that window... set status: 'REQUIRED'".
+            // We just added `billStatuses` to result. Ideally update Store types, but to avoid store refactoring:
+            // The Dashboard consumes `pendingAllocation` amounts. 
+            // We can re-run `getBillStatus` in dashboard UI for visual purposes.
             isConfirmed: false
         });
     };
 
-    const confirmAllocation = async () => {
+    const commitAllocation = async () => {
         if (!user || !pendingAllocation) return;
         setIsConfirming(true);
 
@@ -61,7 +70,7 @@ export const useAllocation = () => {
                 description: 'Paycheck Income',
             });
 
-            // 2. Log Bill Allocations
+            // 2. Log Bill Allocations & Update last_funded_date
             Object.entries(pendingAllocation.allocations).forEach(([billId, amount]) => {
                 if (amount > 0) {
                     const bill = bills.find(b => b.id === billId);
@@ -74,6 +83,14 @@ export const useAllocation = () => {
                         relatedId: billId,
                         category: 'Fixed Bills'
                     });
+
+                    // Update Bill last_funded_date
+                    if (bill) {
+                        const billRef = doc(db, 'users', user.uid, 'bills', billId);
+                        batch.update(billRef, {
+                            last_funded_date: now
+                        });
+                    }
                 }
             });
 
@@ -110,13 +127,11 @@ export const useAllocation = () => {
                     category: 'Savings'
                 });
 
-                // We'll update the store locally, but we should also persist to settings in Firestore
-                // Note: Settings sync is handled separately but for consistency:
                 const settingsRef = doc(db, 'users', user.uid, 'settings', 'general');
                 batch.update(settingsRef, { currentEF: settings.currentEF + pendingAllocation.emergencyFundAllocation });
             }
 
-            // 5. Log Debt Allocations & Update Balances (CRITICAL FIX)
+            // 5. Log Debt Allocations & Update Balances
             Object.entries(pendingAllocation.debtAllocations).forEach(([debtId, amount]) => {
                 if (amount > 0) {
                     const debt = debts.find(d => d.id === debtId);
@@ -133,14 +148,13 @@ export const useAllocation = () => {
                     // Update Debt Balance
                     const debtRef = doc(db, 'users', user.uid, 'debts', debtId);
                     const currentBalance = debt?.currentBalance || 0;
-                    // Ensure we don't go below zero (optional but good sanity check)
                     const newBalance = Math.max(0, currentBalance - amount);
                     batch.update(debtRef, { currentBalance: newBalance });
                 }
             });
 
 
-            // 5. Log Paycheck Audit History
+            // 6. Log Paycheck Audit History (Snapshot)
             const auditRef = doc(collection(db, 'users', user.uid, 'paycheck_history'));
             batch.set(auditRef, {
                 id: auditRef.id,
@@ -170,7 +184,7 @@ export const useAllocation = () => {
         paycheckAmount,
         setPaycheckAmount,
         runAllocation,
-        confirmAllocation,
+        commitAllocation, // Renamed from confirmAllocation
         isConfirming
     };
 };

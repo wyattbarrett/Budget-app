@@ -2,20 +2,22 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helper function to check if user is authenticated
+    // Helper functions
     function isAuthenticated() {
       return request.auth != null;
     }
-
-    // Helper function to check if the user is accessing their own data
+    
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
     // Helper function to check if the user is a collaborator
+    // Checks if the user's email exists in the 'collaborators' array field of the user document
     function isCollaborator(userId) {
-      return isAuthenticated() && exists(/databases/$(database)/documents/users/$(userId)/collaborators/$(request.auth.token.email));
+      let userDoc = get(/databases/$(database)/documents/users/$(userId));
+      return isAuthenticated() && 
+             (userDoc.data.collaborators is list && 
+              request.auth.token.email in userDoc.data.collaborators);
     }
 
     // Match any document in the 'users' collection
