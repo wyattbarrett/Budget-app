@@ -1,42 +1,17 @@
-import { useEffect, useState } from 'react';
-import { collection, onSnapshot, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { useState } from 'react';
+import { collection, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../context/AuthContext';
-import { useStore, Bill, SinkingFund } from '../../store';
+import { Bill, SinkingFund } from '../../store';
 
 export const useBudget = () => {
     const { user } = useAuth();
-    const { setBills, setSinkingFunds } = useStore();
-    const [loading, setLoading] = useState(true);
+    // Loading is now handled globally or via async action state if needed.
+    // We can return a static false or remove it. For now, let's keep the signature compatible.
+    const [loading] = useState(false);
 
-    // Sync Bills and Funds
-    useEffect(() => {
-        if (!user) {
-            setBills([]);
-            setSinkingFunds([]);
-            setLoading(false);
-            return;
-        }
-
-        const billsRef = collection(db, 'users', user.uid, 'bills');
-        const fundsRef = collection(db, 'users', user.uid, 'sinkingFunds');
-
-        const unsubBills = onSnapshot(billsRef, (snapshot) => {
-            const billsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Bill));
-            setBills(billsData);
-        });
-
-        const unsubFunds = onSnapshot(fundsRef, (snapshot) => {
-            const fundsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SinkingFund));
-            setSinkingFunds(fundsData);
-            setLoading(false);
-        });
-
-        return () => {
-            unsubBills();
-            unsubFunds();
-        };
-    }, [user, setBills, setSinkingFunds]);
+    // Sync handled by Global useDataSync in Layout.tsx
+    // We only expose actions here.
 
     // Actions
     const addNewBill = async (bill: Omit<Bill, 'id'>) => {

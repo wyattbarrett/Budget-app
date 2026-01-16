@@ -3,9 +3,11 @@ import { useLocation } from 'react-router-dom';
 import { BottomNav } from './BottomNav';
 import { OfflineIndicator } from './OfflineIndicator';
 import { useDebtWatcher } from '../features/debt/useDebtWatcher';
+import { useDataSync } from '../hooks/useDataSync';
 import { Sidebar } from './Sidebar';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    useDataSync(); // Centralized Data Fetching
     useDebtWatcher();
     const location = useLocation();
     const isDashboard = location.pathname === '/';

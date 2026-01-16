@@ -1,25 +1,38 @@
 import React, { useState } from 'react';
-import { useStore } from '../../store';
+import { useAuth } from '../../context/AuthContext';
+import { DebtService } from './DebtService';
 
 export const AddDebtModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
-    const { addDebt } = useStore();
+    // Removed local store action in favor of Cloud Service + Global Sync
+    const { user } = useAuth();
     const [name, setName] = useState('');
     const [balance, setBalance] = useState('');
     const [minPayment, setMinPayment] = useState('');
     const [apr, setApr] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = () => {
-        if (!name || !balance || !minPayment) return;
-        addDebt({
-            id: crypto.randomUUID(),
-            name,
-            totalAmount: parseFloat(balance),
-            currentBalance: parseFloat(balance),
-            minPayment: parseFloat(minPayment),
-            apr: parseFloat(apr) || 0,
-        });
-        setName(''); setBalance(''); setMinPayment(''); setApr('');
-        onClose();
+    const handleSubmit = async () => {
+        if (!name || !balance || !minPayment || !user) return;
+
+        setIsSubmitting(true);
+        try {
+            await DebtService.addDebt(user.uid, {
+                id: crypto.randomUUID(),
+                name,
+                totalAmount: parseFloat(balance),
+                currentBalance: parseFloat(balance),
+                minPayment: parseFloat(minPayment),
+                apr: parseFloat(apr) || 0,
+            });
+
+            // Cleanup
+            setName(''); setBalance(''); setMinPayment(''); setApr('');
+            onClose();
+        } catch (error) {
+            console.error("Error adding debt:", error);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (!isOpen) return null;
@@ -35,8 +48,10 @@ export const AddDebtModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                     <input className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white" placeholder="APR %" type="number" value={apr} onChange={e => setApr(e.target.value)} />
                 </div>
                 <div className="flex gap-2 mt-6">
-                    <button onClick={onClose} className="flex-1 py-3 text-gray-400 font-bold hover:text-white">Cancel</button>
-                    <button onClick={handleSubmit} className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-400">Add Debt</button>
+                    <button onClick={onClose} disabled={isSubmitting} className="flex-1 py-3 text-gray-400 font-bold hover:text-white disabled:opacity-50">Cancel</button>
+                    <button onClick={handleSubmit} disabled={isSubmitting} className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-400 disabled:opacity-50">
+                        {isSubmitting ? 'Adding...' : 'Add Debt'}
+                    </button>
                 </div>
             </div>
         </div>

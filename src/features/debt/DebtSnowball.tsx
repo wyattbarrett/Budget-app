@@ -3,6 +3,8 @@ import { useStore, Debt } from '../../store';
 import { CircularProgress } from '../../components/CircularProgress';
 import { PayoffCelebration } from './PayoffCelebration';
 import { AddDebtModal } from './AddDebtModal';
+import { DebtService } from './DebtService';
+import { useAuth } from '../../context/AuthContext';
 
 /**
  * The Debt Snowball component.
@@ -12,7 +14,8 @@ import { AddDebtModal } from './AddDebtModal';
  * @returns {JSX.Element} The rendered DebtSnowball component
  */
 export const DebtSnowball: React.FC = () => {
-    const { debts, removeDebt } = useStore();
+    const { user } = useAuth();
+    const { debts } = useStore();
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [celebrationData, setCelebrationData] = useState<{ name: string, freed: number, power: number } | null>(null);
 
@@ -27,13 +30,13 @@ export const DebtSnowball: React.FC = () => {
     const totalPaid = Math.max(0, startDebt - totalDebt);
     const progress = startDebt > 0 ? (totalPaid / startDebt) * 100 : 0;
 
-    const handlePayoff = (debt: Debt) => {
+    const handlePayoff = async (debt: Debt) => {
+        if (!user) return; // Guard
+
         // Recycle the minimum payment into the Snowball Power for future allocations
         useStore.getState().recycleDebtPayment(debt.minPayment);
 
         // Calculate new power for celebration (Current Power + Freed Min Payment)
-        // Note: We use the store's current snowball power (which now includes this recycled amount) 
-        // plus typically the "Snowball" portion of the allocation, but here we just show what we "freed up".
         const newPower = useStore.getState().availableSnowballPower;
 
         setCelebrationData({
@@ -42,8 +45,8 @@ export const DebtSnowball: React.FC = () => {
             power: newPower
         });
 
-        // Remove the debt
-        removeDebt(debt.id);
+        // Remove the debt from Cloud
+        await DebtService.deleteDebt(user.uid, debt.id);
     };
 
     return (
