@@ -3,9 +3,17 @@ import { useStore } from '../../store';
 import { useBudget } from './useBudget';
 import { AddBillModal } from './AddBillModal';
 import { AddFundModal } from './AddFundModal';
+import { getOrdinal } from '../../utils/formatters';
 
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * The Master Budget Setup component.
+ * Allows users to manage their zero-based budget, including income, bills, and sinking funds.
+ * Visualizes the "Left to Budget" amount to ensure every dollar has a name.
+ *
+ * @returns {JSX.Element} The rendered Budget component
+ */
 export const Budget: React.FC = () => {
     const navigate = useNavigate();
     const { bills, sinkingFunds } = useStore();
@@ -15,14 +23,11 @@ export const Budget: React.FC = () => {
     const [isFundModalOpen, setIsFundModalOpen] = useState(false);
     const [estimatedIncome, setEstimatedIncome] = useState(5000); // Default for MVP
 
-    // Calculate Totals
+    // --- Budget Calculations ---
     const totalBills = bills.reduce((sum, bill) => sum + parseFloat(bill.amount), 0);
     const totalFunds = sinkingFunds.reduce((sum, fund) => sum + fund.targetAmount, 0);
     const totalBudgeted = totalBills + totalFunds;
     const remaining = estimatedIncome - totalBudgeted;
-
-    // Handle Fund Target Update (Mock for now, or direct firestore update)
-    // For MVP, we'll just display them. Editing would require a debounced input.
 
     if (loading) {
         return <div className="p-8 text-center text-gray-400">Loading budget data...</div>;
@@ -103,20 +108,20 @@ export const Budget: React.FC = () => {
                     {bills.map(bill => (
                         <div key={bill.id} className="bg-surface-dark p-4 rounded-xl border border-white/5 flex justify-between items-center shadow-sm">
                             <div className="flex items-center gap-4">
-                                <div className={`size-12 rounded-xl flex items-center justify-center ${bill.name.includes('Rent') ? 'bg-blue-500/10 text-blue-400' :
-                                    bill.name.includes('Elect') ? 'bg-amber-500/10 text-amber-400' :
+                                <div className={`size-12 rounded-xl flex items-center justify-center ${(bill.name || '').includes('Rent') ? 'bg-blue-500/10 text-blue-400' :
+                                    (bill.name || '').includes('Elect') ? 'bg-amber-500/10 text-amber-400' :
                                         'bg-purple-500/10 text-purple-400'
                                     }`}>
                                     <span className="material-symbols-outlined text-[20px]">
-                                        {bill.name.includes('Rent') ? 'home' :
-                                            bill.name.includes('Elect') ? 'bolt' : 'receipt_long'}
+                                        {(bill.name || '').includes('Rent') ? 'home' :
+                                            (bill.name || '').includes('Elect') ? 'bolt' : 'receipt_long'}
                                     </span>
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h3 className="text-white font-bold">{bill.name}</h3>
                                         {/* Mock Adjustment Tag from design */}
-                                        {bill.name.includes('Electric') && (
+                                        {(bill.name || '').includes('Electric') && (
                                             <span className="text-[10px] font-bold bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded">Adj. +$20</span>
                                         )}
                                     </div>
@@ -158,15 +163,15 @@ export const Budget: React.FC = () => {
                     {sinkingFunds.map(fund => (
                         <div key={fund.id} className="bg-surface-dark p-4 rounded-xl border border-white/5 flex justify-between items-center shadow-sm">
                             <div className="flex items-center gap-4">
-                                <div className={`size-12 rounded-xl flex items-center justify-center ${fund.name.includes('Cloth') ? 'bg-pink-500/10 text-pink-400' :
-                                    fund.name.includes('Hair') ? 'bg-purple-500/10 text-purple-400' :
-                                        fund.name.includes('Groc') ? 'bg-emerald-500/10 text-emerald-400' :
+                                <div className={`size-12 rounded-xl flex items-center justify-center ${(fund.name || '').includes('Cloth') ? 'bg-pink-500/10 text-pink-400' :
+                                    (fund.name || '').includes('Hair') ? 'bg-purple-500/10 text-purple-400' :
+                                        (fund.name || '').includes('Groc') ? 'bg-emerald-500/10 text-emerald-400' :
                                             'bg-amber-500/10 text-amber-400'
                                     }`}>
                                     <span className="material-symbols-outlined text-[20px]">
-                                        {fund.name.includes('Cloth') ? 'checkroom' :
-                                            fund.name.includes('Hair') ? 'content_cut' :
-                                                fund.name.includes('Groc') ? 'shopping_basket' : 'restaurant'}
+                                        {(fund.name || '').includes('Cloth') ? 'checkroom' :
+                                            (fund.name || '').includes('Hair') ? 'content_cut' :
+                                                (fund.name || '').includes('Groc') ? 'shopping_basket' : 'restaurant'}
                                     </span>
                                 </div>
                                 <div>
@@ -204,20 +209,3 @@ export const Budget: React.FC = () => {
         </div>
     );
 };
-
-// Helper for ordinals
-const getOrdinal = (n: string) => {
-    const v = parseInt(n);
-    const j = v % 10;
-    const k = v % 100;
-    if (j === 1 && k !== 11) {
-        return n + "st";
-    }
-    if (j === 2 && k !== 12) {
-        return n + "nd";
-    }
-    if (j === 3 && k !== 13) {
-        return n + "rd";
-    }
-    return n + "th";
-}

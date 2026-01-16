@@ -35,14 +35,8 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # For now, let's create a simple default conf inline or just rely on default if it's simple
 # To handle React Router history mode, we need a custom config usually.
 
-RUN echo 'server { \
-    listen 80; \
-    location / { \
-        root /usr/share/nginx/html; \
-        index index.html index.htm; \
-        try_files $uri $uri/ /index.html; \
-    } \
-}' > /etc/nginx/conf.d/default.conf
+# Copy custom nginx config
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 

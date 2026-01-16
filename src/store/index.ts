@@ -124,3 +124,8 @@ export const useStore = create<AppState>()(
         }
     )
 );
+
+// Expose store for E2E
+if (typeof window !== 'undefined') {
+    (window as any).useStore = useStore;
+}

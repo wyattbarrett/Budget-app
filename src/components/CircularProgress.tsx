@@ -6,6 +6,7 @@ interface CircularProgressProps {
     size?: number;
     strokeWidth?: number;
     icon?: string;
+    showText?: boolean;
 }
 
 export const CircularProgress: React.FC<CircularProgressProps> = ({
@@ -13,7 +14,8 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
     color = '#10B981', // Default Emerald-500
     size = 80,
     strokeWidth = 8,
-    icon
+    icon,
+    showText = true
 }) => {
     // Ensure percentage is between 0 and 100
     const clampedPercentage = Math.min(Math.max(percentage, 0), 100);
@@ -49,14 +51,16 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
                     className="transition-all duration-1000 ease-out"
                 />
             </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                {icon ? (
-                    <span className="material-symbols-outlined text-[24px]" style={{ color }}>{icon}</span>
-                ) : (
-                    <span className="text-xs font-bold">{Math.round(clampedPercentage)}%</span>
-                )}
-                {icon && <span className="text-[10px] font-bold mt-[-2px]">{Math.round(clampedPercentage)}%</span>}
-            </div>
+            {showText && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+                    {icon ? (
+                        <span className="material-symbols-outlined text-[24px]" style={{ color }}>{icon}</span>
+                    ) : (
+                        <span className="text-xs font-bold">{Math.round(clampedPercentage)}%</span>
+                    )}
+                    {icon && <span className="text-[10px] font-bold mt-[-2px]">{Math.round(clampedPercentage)}%</span>}
+                </div>
+            )}
         </div>
     );
 };

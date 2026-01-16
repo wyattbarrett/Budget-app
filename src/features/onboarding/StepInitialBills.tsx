@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Trash } from 'lucide-react';
+import { useStore } from '../../store';
 
 interface Bill {
     id: string;
@@ -30,10 +31,11 @@ export const StepInitialBills: React.FC<Props> = ({ onFinish, onBack }) => {
         setBills(bills.map(b => b.id === id ? { ...b, [field]: value } : b));
     };
 
+    const { setBills: setStoreBills } = useStore();
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Saving bills:", bills);
-        // TODO: Save to global store or Firestore
+        setStoreBills(bills);
         onFinish();
     };
 

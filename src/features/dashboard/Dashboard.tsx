@@ -11,9 +11,12 @@ import { ShortfallResolutionModal } from './ShortfallResolutionModal';
 
 import { PaydayEntryModal } from './PaydayEntryModal';
 import { Sidebar } from '../../components/Sidebar';
+import { CircularProgress } from '../../components/CircularProgress';
+import { PaycheckCard } from './PaycheckCard';
+import { RequiredBillsCard } from './RequiredBillsCard';
 
 export const Dashboard: React.FC = () => {
-    const { settings, bills, pendingAllocation } = useStore();
+    const { settings, bills, pendingAllocation, sinkingFunds } = useStore();
     // Removed useAllocation from here to prevent re-renders on typing
     const { commitAllocation, isConfirming } = useAllocation(); // We still need confirm, but that state changes rarely
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,12 +59,56 @@ export const Dashboard: React.FC = () => {
         setIsReallocateOpen(true);
     };
 
+    const handleReallocationSuccess = (sourceFundId: string, amount: number) => {
+        // 1. Update Pending Allocation to show the bill is now funded (visually)
+        // We add the reallocated amount to the 'allocations' map for that bill
+        if (pendingAllocation && selectedUrgentBill) {
+            const currentAlloc = pendingAllocation.allocations[selectedUrgentBill.id] || 0;
+            const newAlloc = currentAlloc + amount;
+
+            // We need to update the store's pending allocation
+            // Since we don't have a direct 'updatePendingAllocation' action exposed often, 
+            // we might need to overwrite it or use setPendingAllocation
+            const updatedPending = {
+                ...pendingAllocation,
+                allocations: {
+                    ...pendingAllocation.allocations,
+                    [selectedUrgentBill.id]: newAlloc
+                }
+            };
+            useStore.setState({ pendingAllocation: updatedPending });
+        }
+
+        // 2. Update Local Sinking Fund Balance
+        const fund = useStore.getState().sinkingFunds.find(f => f.id === sourceFundId);
+        if (fund) {
+            // Update the specific fund in the array
+            const updatedFunds = useStore.getState().sinkingFunds.map(f =>
+                f.id === sourceFundId ? { ...f, currentAmount: f.currentAmount - amount } : f
+            );
+            useStore.setState({ sinkingFunds: updatedFunds });
+        }
+
+        setIsReallocateOpen(false);
+        setSelectedUrgentBill(null);
+    };
+
     // Memoize Dates
     const { today, currentCycleEnd } = useMemo(() => {
         const t = new Date();
         const end = settings.nextPayDate ? new Date(settings.nextPayDate) : calculateNextPayDate(t, settings.payFrequency);
         return { today: t, currentCycleEnd: end };
     }, [settings.nextPayDate, settings.payFrequency]);
+
+    // Memoize Sinking Funds Logic
+    const { totalSinkingSaved, totalSinkingGoal, sinkingPercentage } = useMemo(() => {
+        if (!sinkingFunds || sinkingFunds.length === 0) return { totalSinkingSaved: 0, totalSinkingGoal: 0, sinkingPercentage: 0 };
+        const saved = sinkingFunds.reduce((acc, fund) => acc + fund.currentAmount, 0);
+        const goal = sinkingFunds.reduce((acc, fund) => acc + fund.targetAmount, 0);
+        const pct = goal > 0 ? (saved / goal) * 100 : 0;
+        return { totalSinkingSaved: saved, totalSinkingGoal: goal, sinkingPercentage: pct };
+    }, [sinkingFunds]);
+
 
     // Memoize Bills Logic
     const { urgentBills, activeBills, ghostedBills } = useMemo(() => {
@@ -77,15 +124,6 @@ export const Dashboard: React.FC = () => {
                 ghosted.push(bill);
             }
         });
-
-        // Filter urgent from active based on some urgent criteria if needed, 
-        // or just keep them all in active for now as requested.
-        // For visual consistency with previous "Urgent" section:
-        // Let's say Urgent is anything due within 5 days? 
-        // Or if we just trust "Required" means general active needs.
-        // The original logic split them. Let's keep existing "Urgent" vs "Active" if possible, 
-        // but the prompt emphasized GHOSTED vs REQUIRED opacity.
-        // Let's just return what we have.
 
         return { urgentBills: urgent, activeBills: active, ghostedBills: ghosted };
     }, [bills, today, currentCycleEnd]);
@@ -108,22 +146,25 @@ export const Dashboard: React.FC = () => {
     }, [pendingAllocation, urgentBills]);
 
     return (
-        <div className="bg-background-light dark:bg-background-dark min-h-screen flex justify-center w-full font-sans transition-colors duration-300">
-            {/* Sidebar Overlay */}
-            <div
-                className={`fixed inset-0 bg-black/50 z-30 transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-                onClick={() => setIsSidebarOpen(false)}
-            />
+        <div className="bg-background-light dark:bg-background-dark h-full flex justify-center w-full font-sans transition-colors duration-300">
+            {/* Sidebar Overlay (Mobile Only) */}
+            <div className={`
+                md:hidden fixed inset-0 bg-black/50 z-30 transition-opacity duration-300 
+                ${isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+            `} onClick={() => setIsSidebarOpen(false)} />
 
-            {/* Sidebar */}
-            <div className={`fixed top-0 left-0 h-full w-80 z-40 transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+            {/* Sidebar (Mobile Only) */}
+            <div className={`
+                md:hidden fixed top-0 left-0 h-full w-80 z-40 transform transition-transform duration-300 ease-in-out 
+                ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+            `}>
+                <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} variant="drawer" />
             </div>
 
-            <div className="flex flex-col gap-6 w-full max-w-md mx-auto relative">
+            <div className="flex flex-col h-full w-full relative overflow-hidden">
 
-                {/* Top App Bar */}
-                <header className="flex items-center justify-between px-6 py-5 z-20 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md sticky top-0">
+                {/* Top App Bar (Mobile Only - Desktop has Sidebar) */}
+                <header className="md:hidden flex-none flex items-center justify-between px-6 py-5 z-20 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md sticky top-0">
                     <div className="flex items-center gap-3">
                         <div className="flex items-center justify-center size-10 rounded-full bg-surface-dark border border-white/5 cursor-pointer hover:bg-white/10 transition-colors" onClick={() => setIsSidebarOpen(true)}>
                             <span className="material-symbols-outlined text-white text-[20px]">menu</span>
@@ -140,157 +181,164 @@ export const Dashboard: React.FC = () => {
                     </div>
                 </header>
 
-                {/* Main Content */}
-                <main className="flex-1 flex flex-col px-4 pb-24 overflow-y-auto space-y-6">
+                {/* Desktop Header / Title */}
+                <div className="hidden md:flex flex-none items-center justify-between px-6 pt-8 pb-4">
+                    <h1 className="text-3xl font-bold font-display text-white">Dashboard</h1>
+                </div>
 
-                    {/* Paycheck Header Card */}
-                    <div className={`relative overflow-hidden rounded-2xl p-6 shadow-lg border border-white/5 group ${hasShortfall ? 'bg-danger/20 border-danger/50' : 'bg-gradient-to-br from-[#1d2f29] to-[#131f1b]'}`}>
-                        <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay bg-[url('/cubes.png')] bg-repeat"></div>
+                {/* Main Content Grid */}
+                <main className="flex-1 min-h-0 px-4 md:px-6 pb-24 md:pb-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start h-full">
 
-                        <div className="relative z-10 flex flex-col gap-1">
-                            <div className="flex justify-between items-start">
-                                <div>
-                                    <p className={`font-bold text-sm tracking-wider uppercase mb-1 ${hasShortfall ? 'text-danger' : 'text-primary'}`}>
-                                        {hasShortfall ? 'Critical Shortfall' : 'Current Paycheck'}
-                                    </p>
-                                    <h2 className="text-white text-3xl font-bold font-display tracking-tight">
-                                        {hasShortfall ? `-$${shortfallAmount.toFixed(2)}` : `$${leftToBudget.toFixed(2)}`}
-                                    </h2>
-                                    <p className="text-gray-400 text-sm font-medium mt-1">
-                                        {hasShortfall ? 'needed to cover bills' : 'Left to Budget'}
-                                    </p>
-                                </div>
-                                <div className="bg-white/5 backdrop-blur-sm px-3 py-1 rounded-lg border border-white/5">
-                                    <p className="text-white text-xs font-semibold">
-                                        {today.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - {currentCycleEnd.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                                    </p>
+                        {/* Main Column (Span 8) - Central Command - Independent Scroll */}
+                        <div className="lg:col-span-8 flex flex-col gap-6 h-full overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+
+                            {/* Paycheck HUD and Add Income - GRID Layout to prevent overlap */}
+                            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-stretch flex-none">
+                                {/* Paycheck Header Card */}
+                                <PaycheckCard
+                                    pendingAllocation={pendingAllocation}
+                                    hasShortfall={hasShortfall}
+                                    shortfallAmount={shortfallAmount}
+                                    leftToBudget={leftToBudget}
+                                    today={today}
+                                    currentCycleEnd={currentCycleEnd}
+                                    isConfirming={isConfirming}
+                                    onConfirm={handleConfirmClick}
+                                    onResolveShortfall={() => setIsShortfallModalOpen(true)}
+                                />
+
+                                {/* Add Income Button */}
+                                <div className="hidden lg:flex items-center justify-center">
+                                    <button
+                                        onClick={() => setIsModalOpen(true)}
+                                        className="h-full aspect-square flex flex-col items-center justify-center gap-2 rounded-2xl bg-surface-dark border border-white/5 shadow-2xl hover:bg-white/5 transition-colors group"
+                                    >
+                                        <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                            <span className="material-symbols-outlined text-primary text-3xl">add</span>
+                                        </div>
+                                        <span className="text-white font-bold text-sm">Add Income</span>
+                                    </button>
                                 </div>
                             </div>
 
-                            <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <span className={`material-symbols-outlined text-lg ${pendingAllocation ? (hasShortfall ? 'text-danger' : 'text-primary') : 'text-gray-500'}`}>
-                                        {pendingAllocation ? (hasShortfall ? 'error' : 'check_circle') : 'pending'}
-                                    </span>
-                                    <span className="text-gray-300 text-sm">
-                                        {pendingAllocation ? (hasShortfall ? 'Action Required' : 'Review Allocation') : 'No Allocation Run'}
-                                    </span>
+                            {/* Urgent Section */}
+                            {urgentBills.length > 0 && (
+                                <div className="space-y-3 flex-none">
+                                    <h3 className="text-white/60 text-xs font-bold uppercase tracking-widest px-1">Attention Needed</h3>
+                                    {urgentBills.map(bill => (
+                                        <div
+                                            key={bill.id}
+                                            onClick={() => handleUrgentBillClick(bill)}
+                                            className="relative flex flex-col gap-4 rounded-xl bg-surface-dark p-4 shadow-glow-danger border border-danger/30 cursor-pointer hover:bg-surface-dark/80 transition-colors"
+                                        >
+                                            <div className="flex items-start justify-between">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="flex items-center justify-center rounded-xl bg-danger/10 shrink-0 size-12 border border-danger/20 text-danger">
+                                                        <span className="material-symbols-outlined">warning</span>
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-white text-base font-bold leading-tight">{bill.name}</h4>
+                                                        <p className="text-danger text-sm font-medium mt-0.5">Due Day: {bill.dueDay}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col items-end">
+                                                    <span className="text-white font-mono font-bold">${bill.amount}</span>
+                                                    <span className="text-white/40 text-xs">Allocated: ${pendingAllocation?.allocations[bill.id]?.toFixed(2) || '0.00'}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                                {pendingAllocation && (
-                                    hasShortfall ? (
-                                        <button
-                                            onClick={() => setIsShortfallModalOpen(true)}
-                                            className="bg-danger hover:bg-danger/90 text-white text-sm font-bold py-2 px-4 rounded-lg shadow-lg flex items-center gap-2 transition-all animate-pulse"
-                                        >
-                                            <span className="material-symbols-outlined text-[18px]">build</span>
-                                            Resolve
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={handleConfirmClick}
-                                            disabled={isConfirming}
-                                            className="bg-primary hover:bg-primary/90 text-white text-sm font-bold py-2 px-4 rounded-lg shadow-lg flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            {isConfirming ? (
-                                                <span className="material-symbols-outlined animate-spin text-[18px]">sync</span>
-                                            ) : (
-                                                <span className="material-symbols-outlined text-[18px]">save</span>
-                                            )}
-                                            {isConfirming ? 'Saving...' : 'Confirm & Log'}
-                                        </button>
-                                    )
-                                )}
+                            )}
+
+                            {/* Active Budget Section */}
+                            <RequiredBillsCard activeBills={activeBills} pendingAllocation={pendingAllocation} />
+                        </div>
+
+                        {/* Side Column (Span 4) - Utility Rail - Independent Scroll */}
+                        <div className="lg:col-span-4 flex flex-col gap-6 h-full overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+
+                            {/* Baby Step 2: Snowball (Top) */}
+                            <div className="rounded-2xl bg-surface-dark p-6 border border-white/5 shadow-2xl relative overflow-hidden group flex-none">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <span className="material-symbols-outlined text-6xl text-white">ac_unit</span>
+                                </div>
+                                <h3 className="text-white/60 text-xs font-bold uppercase tracking-widest mb-4">Baby Step 2: Momentum</h3>
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="size-16 rounded-full border-4 border-primary/20 flex items-center justify-center relative">
+                                        <span className="material-symbols-outlined text-primary text-xl">trending_up</span>
+                                    </div>
+                                    <div>
+                                        <p className="text-white font-bold text-lg">Debt Snowball</p>
+                                        <p className="text-gray-400 text-xs">Keep the momentum going!</p>
+                                    </div>
+                                </div>
+                                <button className="w-full py-2 bg-primary/10 text-primary rounded-lg font-bold text-sm hover:bg-primary/20 transition-colors">
+                                    View Snowball
+                                </button>
                             </div>
-                        </div>
-                    </div>
 
-                    {/* Urgent Section */}
-                    {urgentBills.length > 0 && (
-                        <div className="space-y-3">
-                            <h3 className="text-white/60 text-xs font-bold uppercase tracking-widest px-1">Attention Needed</h3>
-                            {urgentBills.map(bill => (
-                                <div
-                                    key={bill.id}
-                                    onClick={() => handleUrgentBillClick(bill)}
-                                    className="relative flex flex-col gap-4 rounded-xl bg-surface-dark p-4 shadow-glow-danger border border-danger/30 cursor-pointer hover:bg-surface-dark/80 transition-colors"
-                                >
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-center gap-4">
-                                            <div className="flex items-center justify-center rounded-xl bg-danger/10 shrink-0 size-12 border border-danger/20 text-danger">
-                                                <span className="material-symbols-outlined">warning</span>
-                                            </div>
-                                            <div>
-                                                <h4 className="text-white text-base font-bold leading-tight">{bill.name}</h4>
-                                                <p className="text-danger text-sm font-medium mt-0.5">Due Day: {bill.dueDay}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col items-end">
-                                            <span className="text-white font-mono font-bold">${bill.amount}</span>
-                                            <span className="text-white/40 text-xs">Allocated: ${pendingAllocation?.allocations[bill.id]?.toFixed(2) || '0.00'}</span>
-                                        </div>
-                                    </div>
+                            {/* Baby Step 1: Emergency Fund (Middle) */}
+                            <div className="rounded-2xl bg-surface-dark p-6 border border-white/5 shadow-2xl relative overflow-hidden flex-none">
+                                <h3 className="text-white/60 text-xs font-bold uppercase tracking-widest mb-4">Baby Step 1: Emergency Fund</h3>
+                                <div className="flex justify-between items-end mb-2">
+                                    <span className="text-2xl font-bold text-white font-mono">${settings.currentEF.toLocaleString()}</span>
+                                    <span className="text-xs text-gray-500 mb-1">of ${settings.starterEFGoal.toLocaleString()}</span>
                                 </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Active Budget Section */}
-                    <div className="space-y-3">
-                        <h3 className="text-white/60 text-xs font-bold uppercase tracking-widest px-1">Funding Priorities (Required)</h3>
-
-                        {activeBills.map(bill => (
-                            <div key={bill.id} className="group flex flex-col gap-3 rounded-xl bg-surface-dark p-4 shadow-lg border border-white/5 hover:border-primary/30 transition-colors">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12 text-primary group-hover:scale-105 transition-transform">
-                                            <span className="material-symbols-outlined">receipt_long</span>
-                                        </div>
-                                        <div>
-                                            <h4 className="text-white text-base font-bold">{bill.name}</h4>
-                                            <p className="text-gray-400 text-xs mt-0.5">Due Day: {bill.dueDay}</p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-white font-mono font-bold text-lg">${pendingAllocation?.allocations[bill.id]?.toFixed(2) || '0'}</p>
-                                        <p className="text-white/40 text-xs font-medium">of ${bill.amount}</p>
-                                    </div>
-                                </div>
-                                <div className="relative h-3 w-full rounded-full bg-black/40 overflow-hidden">
+                                <div className="w-full bg-black/40 h-3 rounded-full overflow-hidden">
                                     <div
-                                        className="absolute top-0 left-0 h-full bg-primary rounded-full shadow-glow-primary transition-all duration-500"
-                                        style={{ width: pendingAllocation ? `${(pendingAllocation.allocations[bill.id] / parseFloat(bill.amount)) * 100}%` : '0%' }}
+                                        className="bg-emerald-500 h-full rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)] transition-all duration-1000"
+                                        style={{ width: `${Math.min(100, (settings.currentEF / settings.starterEFGoal) * 100)}%` }}
                                     ></div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
 
-                    {/* Ghosted Section */}
-                    {ghostedBills.length > 0 && (
-                        <div className="space-y-3 pt-2">
-                            <h3 className="text-muted-text text-xs font-bold uppercase tracking-widest px-1">Upcoming (Ghosted)</h3>
-                            {ghostedBills.map(bill => (
-                                <div key={bill.id} className="flex items-center justify-between rounded-xl bg-surface-dark/40 p-4 border border-white/5 opacity-40 hover:opacity-100 transition-opacity">
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex items-center justify-center rounded-xl bg-surface-highlight/50 shrink-0 size-10 text-muted-text">
-                                            <span className="material-symbols-outlined text-[20px]">calendar_month</span>
-                                        </div>
-                                        <div>
-                                            <h4 className="text-muted-text text-base font-bold">{bill.name}</h4>
-                                            <p className="text-muted-text text-xs font-medium">Due Day: {bill.dueDay}</p>
-                                        </div>
+                            {/* Sinking Funds Summary (Bottom) */}
+                            <div className="rounded-2xl bg-surface-dark p-6 border border-white/5 shadow-2xl flex-none">
+                                <h3 className="text-white/60 text-xs font-bold uppercase tracking-widest mb-4">Sinking Funds</h3>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex flex-col">
+                                        <span className="text-2xl font-bold text-white font-mono">${totalSinkingSaved.toLocaleString()}</span>
+                                        <span className="text-xs text-gray-500">Saved of ${totalSinkingGoal.toLocaleString()}</span>
                                     </div>
-                                    <span className="text-muted-text/50 font-bold">${bill.amount}</span>
+                                    <CircularProgress
+                                        percentage={sinkingPercentage}
+                                        size={60}
+                                        strokeWidth={6}
+                                        color="#10B981"
+                                        icon="savings"
+                                    />
                                 </div>
-                            ))}
-                        </div>
-                    )}
+                            </div>
 
-                    <div className="h-8"></div>
+                            {/* Ghosted Section */}
+                            {ghostedBills.length > 0 && (
+                                <div className="space-y-3 flex-none pb-8">
+                                    <h3 className="text-muted-text text-xs font-bold uppercase tracking-widest px-1">Upcoming (Ghosted)</h3>
+                                    {ghostedBills.map(bill => (
+                                        <div key={bill.id} className="flex items-center justify-between rounded-xl bg-surface-dark p-4 border border-white/5 shadow-2xl opacity-40 hover:opacity-100 transition-opacity">
+                                            <div className="flex items-center gap-4">
+                                                <div className="flex items-center justify-center rounded-xl bg-surface-highlight/50 shrink-0 size-10 text-muted-text">
+                                                    <span className="material-symbols-outlined text-[20px]">calendar_month</span>
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-muted-text text-base font-bold">{bill.name}</h4>
+                                                    <p className="text-muted-text text-xs font-medium">Due Day: {bill.dueDay}</p>
+                                                </div>
+                                            </div>
+                                            <span className="text-muted-text/50 font-bold">${bill.amount}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                    </div>
                 </main>
 
-                {/* Floating Action Button */}
-                <div className="fixed bottom-28 right-6 z-30">
+                {/* Floating Action Button (Mobile Only) */}
+                <div className="md:hidden fixed bottom-28 right-6 z-30">
                     <button
                         onClick={() => setIsModalOpen(true)}
                         className="flex items-center justify-center size-14 rounded-2xl bg-primary text-white shadow-lg shadow-primary/30 hover:scale-105 active:scale-95 transition-transform"
@@ -312,7 +360,7 @@ export const Dashboard: React.FC = () => {
                 onClose={() => setIsReallocateOpen(false)}
                 targetBill={selectedUrgentBill}
                 shortageAmount={shortageAmount}
-                onSuccess={() => { }}
+                onSuccess={(sourceFundId: string, amount: number) => handleReallocationSuccess(sourceFundId, amount)}
             />
 
             {/* Snowball Modal */}

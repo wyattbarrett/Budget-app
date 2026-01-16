@@ -8,6 +8,13 @@ import { AddTransactionModal } from '../transactions/AddTransactionModal';
 
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * The Sinking Funds component.
+ * Manages both annual sinking funds (e.g. Christmas) and lifestyle/simple funds (e.g. Vacation).
+ * Also displays the Emergency Fund Fortress status.
+ *
+ * @returns {JSX.Element} The rendered Funds component
+ */
 export const Funds: React.FC = () => {
     const navigate = useNavigate();
     const { sinkingFunds, settings } = useStore();

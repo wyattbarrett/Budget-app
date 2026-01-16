@@ -8,7 +8,7 @@ interface ReallocateModalProps {
     onClose: () => void;
     targetBill: Bill | null;
     shortageAmount: number;
-    onSuccess: () => void;
+    onSuccess: (sourceFundId: string, amount: number) => void;
 }
 
 export const ReallocateModal: React.FC<ReallocateModalProps> = ({ isOpen, onClose, targetBill, shortageAmount, onSuccess }) => {
@@ -30,7 +30,7 @@ export const ReallocateModal: React.FC<ReallocateModalProps> = ({ isOpen, onClos
             await transferFunds(user.uid, sourceFund, targetBill, shortageAmount);
             setSelectedFund(sourceFund);
             setStep('resolution');
-            onSuccess();
+            onSuccess(sourceFund.id, shortageAmount);
         } catch (error) {
             console.error(error);
             // Todo: Show error toast

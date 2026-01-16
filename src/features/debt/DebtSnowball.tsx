@@ -2,62 +2,28 @@ import React, { useState } from 'react';
 import { useStore, Debt } from '../../store';
 import { CircularProgress } from '../../components/CircularProgress';
 import { PayoffCelebration } from './PayoffCelebration';
+import { AddDebtModal } from './AddDebtModal';
 
-// Temporary Add Debt Modal (Inline for speed, can extract later)
-const AddDebtModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
-    const { addDebt } = useStore();
-    const [name, setName] = useState('');
-    const [balance, setBalance] = useState('');
-    const [minPayment, setMinPayment] = useState('');
-    const [apr, setApr] = useState('');
-
-    const handleSubmit = () => {
-        if (!name || !balance || !minPayment) return;
-        addDebt({
-            id: crypto.randomUUID(),
-            name,
-            totalAmount: parseFloat(balance),
-            currentBalance: parseFloat(balance),
-            minPayment: parseFloat(minPayment),
-            apr: parseFloat(apr) || 0,
-        });
-        setName(''); setBalance(''); setMinPayment(''); setApr('');
-        onClose();
-    };
-
-    if (!isOpen) return null;
-
-    return (
-        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
-            <div className="bg-surface-dark border border-white/10 rounded-2xl p-6 w-full max-w-sm">
-                <h2 className="text-xl font-bold text-white mb-4">Add Liability</h2>
-                <div className="space-y-3">
-                    <input className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white" placeholder="Debt Name (e.g. Visa)" value={name} onChange={e => setName(e.target.value)} />
-                    <input className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white" placeholder="Current Balance" type="number" value={balance} onChange={e => setBalance(e.target.value)} />
-                    <input className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white" placeholder="Min Monthly Payment" type="number" value={minPayment} onChange={e => setMinPayment(e.target.value)} />
-                    <input className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white" placeholder="APR %" type="number" value={apr} onChange={e => setApr(e.target.value)} />
-                </div>
-                <div className="flex gap-2 mt-6">
-                    <button onClick={onClose} className="flex-1 py-3 text-gray-400 font-bold hover:text-white">Cancel</button>
-                    <button onClick={handleSubmit} className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-400">Add Debt</button>
-                </div>
-            </div>
-        </div>
-    );
-};
-
+/**
+ * The Debt Snowball component.
+ * Visualizes debt payoff progress using the Ramsey Snowball Method (smallest balance first).
+ * Includes celebration mechanics and momentum tracking.
+ *
+ * @returns {JSX.Element} The rendered DebtSnowball component
+ */
 export const DebtSnowball: React.FC = () => {
     const { debts, removeDebt } = useStore();
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [celebrationData, setCelebrationData] = useState<{ name: string, freed: number, power: number } | null>(null);
 
-    // Sort: Smallest Balance First (Ramsey Snowball Method)
+    // Sort by smallest balance first (Ramsey Snowball Method)
     const sortedDebts = [...debts].sort((a, b) => a.currentBalance - b.currentBalance);
 
     const totalDebt = debts.reduce((sum, d) => sum + d.currentBalance, 0);
-    const startDebt = debts.reduce((sum, d) => sum + d.totalAmount, 0); // Need a better way to track "Total Paid" historically, but for MVP this is OK-ish if we don't clear history.
-    // Actually, "Total Paid" is tricky without transaction history. 
-    // Let's use (Sum of Start Amounts - Sum of Current Amounts).
+
+    // MVP: Estimate "Total Paid" by comparing initial amounts to current amounts.
+    // TODO: Implement transaction history for precise tracking.
+    const startDebt = debts.reduce((sum, d) => sum + d.totalAmount, 0);
     const totalPaid = Math.max(0, startDebt - totalDebt);
     const progress = startDebt > 0 ? (totalPaid / startDebt) * 100 : 0;
 
@@ -81,145 +47,154 @@ export const DebtSnowball: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background-dark p-4 pb-24 font-sans text-white">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6 pt-2">
-                <h1 className="text-xl font-bold flex items-center gap-2">
-                    <span className="material-symbols-outlined text-teal-400">ac_unit</span>
-                    Debt Snowball
-                </h1>
-                <button onClick={() => setIsAddOpen(true)} className="size-8 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center">
-                    <span className="material-symbols-outlined">add</span>
-                </button>
-            </div>
-
-            {/* Momentum Card */}
-            <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 rounded-3xl p-6 text-center mb-8 relative overflow-hidden shadow-2xl">
-                <div className="absolute top-0 right-0 p-8 opacity-5">
-                    <span className="material-symbols-outlined text-9xl">snowboarding</span>
+        <div className="min-h-full bg-background-dark p-4 md:p-8 font-sans text-white">
+            <div className="max-w-6xl mx-auto w-full">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-8">
+                    <h1 className="text-3xl font-bold flex items-center gap-3">
+                        <span className="material-symbols-outlined text-teal-400 text-4xl">ac_unit</span>
+                        Debt Snowball
+                    </h1>
+                    <button onClick={() => setIsAddOpen(true)} className="size-10 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center hover:bg-teal-500/30 transition-colors">
+                        <span className="material-symbols-outlined">add</span>
+                    </button>
                 </div>
 
-                <div className="relative z-10 flex flex-col items-center">
-                    <div className="mb-4">
-                        <CircularProgress
-                            percentage={progress}
-                            size={120}
-                            color="#2DD4BF"
-                            strokeWidth={10}
-                            icon="snowflake"
-                        />
+                {/* Momentum Card */}
+                <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 rounded-3xl p-8 text-center mb-10 relative overflow-hidden shadow-2xl">
+                    <div className="absolute top-0 right-0 p-8 opacity-5">
+                        <span className="material-symbols-outlined text-9xl">snowboarding</span>
                     </div>
 
-                    <p className="text-teal-400 text-xs font-bold tracking-widest uppercase mb-1">Snowball Momentum</p>
-                    <h2 className="text-3xl font-bold text-white mb-4">${totalPaid.toLocaleString()} Paid</h2>
-
-                    <div className="flex gap-4 w-full">
-                        <div className="bg-black/30 rounded-xl p-3 flex-1 border border-white/5">
-                            <span className="block text-[10px] text-gray-400 uppercase">Remaining</span>
-                            <span className="font-bold text-white">${totalDebt.toLocaleString()}</span>
+                    <div className="relative z-10 flex flex-col items-center">
+                        <div className="mb-6">
+                            <CircularProgress
+                                percentage={progress}
+                                size={140}
+                                color="#2DD4BF"
+                                strokeWidth={12}
+                                icon="snowflake"
+                            />
                         </div>
-                        <button className="bg-teal-500/20 hover:bg-teal-500/30 text-teal-400 rounded-xl p-3 flex-1 font-bold text-sm transition-colors">
-                            View History
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            {/* Priority List */}
-            <div className="space-y-6">
-                <div className="flex items-center justify-between px-1">
-                    <h3 className="font-bold text-lg">Payoff Priority</h3>
-                    <span className="text-[10px] text-teal-400 bg-teal-500/10 px-2 py-1 rounded font-bold uppercase">Smallest to Largest</span>
-                </div>
+                        <p className="text-teal-400 text-sm font-bold tracking-widest uppercase mb-2">Snowball Momentum</p>
+                        <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">${totalPaid.toLocaleString()} Paid</h2>
 
-                {sortedDebts.length === 0 ? (
-                    <div className="text-center py-12 bg-surface-dark border border-dashed border-white/10 rounded-2xl">
-                        <p className="text-gray-500 mb-4">You are debt free! Or you haven't added any yet.</p>
-                        <button onClick={() => setIsAddOpen(true)} className="bg-teal-500 text-white px-6 py-3 rounded-xl font-bold">Add Liability</button>
-                    </div>
-                ) : (
-                    sortedDebts.map((debt, index) => {
-                        const isTarget = index === 0;
-                        const percentPaid = ((debt.totalAmount - debt.currentBalance) / debt.totalAmount) * 100;
-
-                        return (
-                            <div key={debt.id} className={`relative bg-surface-dark border ${isTarget ? 'border-teal-500 shadow-[0_0_20px_rgba(45,212,191,0.1)]' : 'border-white/5'} rounded-2xl p-5 transition-all`}>
-                                {isTarget && (
-                                    <div className="absolute -top-3 right-4 bg-teal-500 text-[#0a0f1c] text-[10px] font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1">
-                                        <span className="material-symbols-outlined text-sm">target</span>
-                                        NEXT TARGET
-                                    </div>
-                                )}
-
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className={`size-10 rounded-xl flex items-center justify-center ${isTarget ? 'bg-teal-500/20 text-teal-400' : 'bg-gray-800 text-gray-500'}`}>
-                                            <span className="material-symbols-outlined">{isTarget ? 'bolt' : 'credit_card'}</span>
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-white text-lg">{debt.name}</h4>
-                                            <p className="text-xs text-gray-500">${debt.currentBalance.toLocaleString()} remaining</p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <span className="block font-bold text-white text-lg">${debt.totalAmount.toLocaleString()}</span>
-                                        <span className="text-xs text-gray-500">Starting Balance</span>
-                                    </div>
-                                </div>
-
-                                {/* Progress Bar */}
-                                <div className="h-2 bg-black/40 rounded-full overflow-hidden mb-2">
-                                    <div
-                                        className={`h-full rounded-full ${isTarget ? 'bg-teal-400' : 'bg-gray-600'}`}
-                                        style={{ width: `${percentPaid}%` }}
-                                    ></div>
-                                </div>
-                                <div className="flex justify-between text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-4">
-                                    <span>Payoff Progress</span>
-                                    <span>{Math.round(percentPaid)}%</span>
-                                </div>
-
-                                {isTarget ? (
-                                    <button
-                                        className="w-full bg-teal-500 hover:bg-teal-400 text-[#0a0f1c] font-bold py-3 rounded-xl shadow-lg shadow-teal-500/20 flex items-center justify-center gap-2 transition-transform active:scale-95"
-                                        onClick={() => {
-                                            // Mock payoff for demo
-                                            if (confirm(`Simulate payoff for ${debt.name}?`)) {
-                                                handlePayoff(debt);
-                                            }
-                                        }}
-                                    >
-                                        <span className="material-symbols-outlined">bolt</span>
-                                        ACCELERATE PAYMENT
-                                    </button>
-                                ) : (
-                                    <div className="flex justify-between items-center bg-black/20 p-3 rounded-xl border border-white/5">
-                                        <span className="text-xs text-gray-400">Min Payment</span>
-                                        <span className="font-bold text-white">${debt.minPayment}</span>
-                                    </div>
-                                )}
+                        <div className="grid grid-cols-2 gap-6 w-full max-w-lg">
+                            <div className="bg-black/30 rounded-2xl p-4 border border-white/5">
+                                <span className="block text-xs text-gray-400 uppercase mb-1">Remaining Balance</span>
+                                <span className="font-bold text-2xl text-white">${totalDebt.toLocaleString()}</span>
                             </div>
-                        );
-                    })
-                )}
+                            <button className="bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/20 rounded-2xl p-4 font-bold text-sm transition-all flex items-center justify-center gap-2 group">
+                                View History
+                                <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Priority List */}
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between px-2">
+                        <h3 className="font-bold text-xl">Payoff Priority</h3>
+                        <span className="text-xs text-teal-400 bg-teal-500/10 px-3 py-1.5 rounded-lg font-bold uppercase tracking-wide">Smallest to Largest</span>
+                    </div>
+
+                    {sortedDebts.length === 0 ? (
+                        <div className="text-center py-20 bg-surface-dark border border-dashed border-white/10 rounded-3xl">
+                            <div className="size-20 rounded-full bg-white/5 mx-auto flex items-center justify-center mb-4">
+                                <span className="material-symbols-outlined text-gray-500 text-4xl">celebration</span>
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-2">Debt Free!</h3>
+                            <p className="text-gray-400 mb-6 max-w-sm mx-auto">You are debt free! Or you haven't added any yet.</p>
+                            <button onClick={() => setIsAddOpen(true)} className="bg-teal-500 hover:bg-teal-400 text-[#0a0f1c] px-6 py-3 rounded-xl font-bold transition-colors">Add Liability</button>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 gap-4">
+                            {sortedDebts.map((debt, index) => {
+                                const isTarget = index === 0;
+                                const percentPaid = ((debt.totalAmount - debt.currentBalance) / debt.totalAmount) * 100;
+
+                                return (
+                                    <div key={debt.id} className={`relative bg-surface-dark border ${isTarget ? 'border-teal-500 shadow-[0_0_30px_rgba(45,212,191,0.1)]' : 'border-white/5'} rounded-2xl p-6 transition-all hover:bg-surface-dark/80`}>
+                                        {isTarget && (
+                                            <div className="absolute -top-3 right-6 bg-teal-500 text-[#0a0f1c] text-[10px] font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1 z-10">
+                                                <span className="material-symbols-outlined text-sm">target</span>
+                                                NEXT TARGET
+                                            </div>
+                                        )}
+
+                                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                            {/* Info */}
+                                            <div className="flex items-center gap-5 flex-1">
+                                                <div className={`size-14 rounded-2xl flex items-center justify-center text-2xl shadow-inner ${isTarget ? 'bg-teal-500/20 text-teal-400' : 'bg-black/40 text-gray-600'}`}>
+                                                    <span className="material-symbols-outlined">{isTarget ? 'bolt' : 'credit_card'}</span>
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-bold text-white text-xl">{debt.name}</h4>
+                                                    <div className="flex items-center gap-2 mt-1">
+                                                        <span className="text-sm text-gray-400">${debt.currentBalance.toLocaleString()} remaining</span>
+                                                        <span className="text-gray-600">•</span>
+                                                        <span className="text-sm text-gray-500">{debt.apr}% APR</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Progress */}
+                                            <div className="flex-1 md:max-w-md">
+                                                <div className="flex justify-between text-xs text-gray-400 mb-2">
+                                                    <span className="font-medium uppercase tracking-wider">Progress</span>
+                                                    <span className="font-bold text-white">{Math.round(percentPaid)}%</span>
+                                                </div>
+                                                <div className="h-3 bg-black/40 rounded-full overflow-hidden">
+                                                    <div
+                                                        className={`h-full rounded-full ${isTarget ? 'bg-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.5)]' : 'bg-gray-700'}`}
+                                                        style={{ width: `${percentPaid}%` }}
+                                                    ></div>
+                                                </div>
+                                            </div>
+
+                                            {/* Action */}
+                                            <div className="md:w-48 text-right">
+                                                {isTarget ? (
+                                                    <button
+                                                        className="w-full bg-teal-500 hover:bg-teal-400 text-[#0a0f1c] font-bold py-3 rounded-xl shadow-lg shadow-teal-500/20 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                                                        onClick={() => {
+                                                            if (confirm(`Simulate payoff for ${debt.name}?`)) {
+                                                                handlePayoff(debt);
+                                                            }
+                                                        }}
+                                                    >
+                                                        <span className="material-symbols-outlined">bolt</span>
+                                                        Pay Off
+                                                    </button>
+                                                ) : (
+                                                    <div className="bg-black/20 p-3 rounded-xl border border-white/5 text-center">
+                                                        <p className="text-[10px] text-gray-500 uppercase font-bold mb-0.5">Min Payment</p>
+                                                        <p className="font-mono text-lg font-bold text-white">${debt.minPayment}</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+
+                {/* Modals */}
+                <AddDebtModal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} />
+
+                <PayoffCelebration
+                    isOpen={!!celebrationData}
+                    onClose={() => setCelebrationData(null)}
+                    debtName={celebrationData?.name || ''}
+                    amountCleared={celebrationData?.freed || 0}
+                    newSnowballPower={celebrationData?.power || 0}
+                    nextTargetName={sortedDebts[0]?.name}
+                />
             </div>
-
-            {/* Modals */}
-            <AddDebtModal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} />
-
-            <PayoffCelebration
-                isOpen={!!celebrationData}
-                onClose={() => setCelebrationData(null)}
-                debtName={celebrationData?.name || ''}
-                amountCleared={celebrationData?.freed || 0}
-                newSnowballPower={celebrationData?.power || 0}
-                nextTargetName={sortedDebts[0]?.name} // After removal, this will be the NEW top one? Ah, current sortedDebts still has it until re-render. State update async. 
-            // Actually if I removeDebt, sortedDebts updates on next render. 
-            // celebrationData set causes re-render... waiting... 
-            // No, removeDebt triggers store update.
-            // The modal shows "Next Target". I might want to pass the one at index 1 (which becomes 0).
-            // MVP imperfection acceptable.
-            />
         </div>
     );
 };

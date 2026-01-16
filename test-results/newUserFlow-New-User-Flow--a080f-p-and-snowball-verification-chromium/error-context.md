@@ -1,0 +1,135 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - generic [ref=e6]:
+    - generic [ref=e8]:
+      - generic [ref=e9]: M
+      - generic [ref=e10]:
+        - heading "mock" [level=3] [ref=e11]
+        - paragraph [ref=e12]: Menu
+    - generic [ref=e13]:
+      - button "dashboard Dashboard" [ref=e14] [cursor=pointer]:
+        - generic [ref=e15]: dashboard
+        - generic [ref=e16]: Dashboard
+      - button "account_balance_wallet Budget" [ref=e17] [cursor=pointer]:
+        - generic [ref=e18]: account_balance_wallet
+        - generic [ref=e19]: Budget
+      - button "ac_unit Snowball" [ref=e20] [cursor=pointer]:
+        - generic [ref=e21]: ac_unit
+        - generic [ref=e22]: Snowball
+      - button "savings Funds" [ref=e23] [cursor=pointer]:
+        - generic [ref=e24]: savings
+        - generic [ref=e25]: Funds
+      - button "pie_chart Reports" [ref=e26] [cursor=pointer]:
+        - generic [ref=e27]: pie_chart
+        - generic [ref=e28]: Reports
+      - button "settings Settings" [ref=e29] [cursor=pointer]:
+        - generic [ref=e30]: settings
+        - generic [ref=e31]: Settings
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - generic [ref=e34]: Appearance
+        - button [ref=e35] [cursor=pointer]
+      - button "logout Sign Out" [ref=e37] [cursor=pointer]:
+        - generic [ref=e38]: logout
+        - generic [ref=e39]: Sign Out
+  - generic [ref=e43]:
+    - generic [ref=e44]:
+      - button "arrow_back" [ref=e45] [cursor=pointer]:
+        - generic [ref=e46]: arrow_back
+      - heading "Master Budget Setup" [level=1] [ref=e47]
+      - button "more_vert" [ref=e48] [cursor=pointer]:
+        - generic [ref=e49]: more_vert
+    - generic [ref=e51]:
+      - generic [ref=e52]:
+        - generic [ref=e53]: Est. Income
+        - generic [ref=e54]:
+          - generic [ref=e55]: $
+          - spinbutton [ref=e56]: "5000"
+      - generic [ref=e57]:
+        - text: Budgeted
+        - generic [ref=e58]: $5,500
+      - generic [ref=e59]:
+        - text: Remaining
+        - generic [ref=e60]: $-500
+    - generic [ref=e63]:
+      - generic [ref=e64]:
+        - heading "Must-Pay Bills" [level=2] [ref=e65]
+        - generic [ref=e66]: 3 Items
+      - generic [ref=e67]:
+        - button "add Add Bill" [ref=e68] [cursor=pointer]:
+          - generic [ref=e69]: add
+          - text: Add Bill
+        - generic [ref=e70]:
+          - generic [ref=e71]:
+            - generic [ref=e73]: home
+            - generic [ref=e74]:
+              - heading "Rent" [level=3] [ref=e76]
+              - paragraph [ref=e77]: Due 1st • Was $1480
+          - generic [ref=e78]:
+            - generic [ref=e80]: $1500.00
+            - button "close" [ref=e81] [cursor=pointer]:
+              - generic [ref=e82]: close
+        - generic [ref=e83]:
+          - generic [ref=e84]:
+            - generic [ref=e86]: home
+            - generic [ref=e87]:
+              - heading "Rent" [level=3] [ref=e89]
+              - paragraph [ref=e90]: Due 1st • Was $1480
+          - generic [ref=e91]:
+            - generic [ref=e93]: $1500.00
+            - button "close" [ref=e94] [cursor=pointer]:
+              - generic [ref=e95]: close
+        - generic [ref=e96]:
+          - generic [ref=e97]:
+            - generic [ref=e99]: receipt_long
+            - generic [ref=e100]:
+              - heading "Test Expense" [level=3] [ref=e102]
+              - paragraph [ref=e103]: Due 1st • Was $480
+          - generic [ref=e104]:
+            - generic [ref=e106]: $500.00
+            - button "close" [ref=e107] [cursor=pointer]:
+              - generic [ref=e108]: close
+    - generic [ref=e109]:
+      - generic [ref=e110]:
+        - heading "Lifestyle & Cash Accounts" [level=2] [ref=e111]
+        - generic [ref=e112]: Sinking Funds
+      - generic [ref=e113]:
+        - button "add Add Account" [ref=e114] [cursor=pointer]:
+          - generic [ref=e115]: add
+          - text: Add Account
+        - generic [ref=e116]:
+          - generic [ref=e117]:
+            - generic [ref=e119]: restaurant
+            - generic [ref=e120]:
+              - heading "Vacation" [level=3] [ref=e121]
+              - paragraph [ref=e122]: "Current Balance: $0.00"
+          - generic [ref=e123]:
+            - generic [ref=e125]: $2000.00
+            - button "close" [ref=e126] [cursor=pointer]:
+              - generic [ref=e127]: close
+    - generic [ref=e128]:
+      - button "check Finalize Budget" [ref=e129] [cursor=pointer]:
+        - generic [ref=e130]: check
+        - generic [ref=e131]: Finalize Budget
+      - paragraph [ref=e132]: Review all auto-adjusted amounts before finalizing.
+    - generic [ref=e134]:
+      - heading "Add Monthly Bill" [level=3] [ref=e135]
+      - generic [ref=e136]:
+        - generic [ref=e137]:
+          - generic [ref=e138]: Bill Name
+          - textbox "e.g. Rent" [ref=e139]: Rent
+        - generic [ref=e140]:
+          - generic [ref=e141]:
+            - generic [ref=e142]: Amount
+            - generic [ref=e143]:
+              - generic [ref=e144]: $
+              - spinbutton [ref=e145]: "1500"
+          - generic [ref=e146]:
+            - generic [ref=e147]: Due Day
+            - spinbutton [ref=e148]: "1"
+        - generic [ref=e149]:
+          - button "Cancel" [ref=e150] [cursor=pointer]
+          - button "Adding..." [disabled] [ref=e151]
+```

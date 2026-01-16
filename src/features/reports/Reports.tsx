@@ -58,6 +58,7 @@ export const Reports: React.FC = () => {
                         size={180}
                         strokeWidth={12}
                         color={analysis.accuracyScore > 80 ? '#10B981' : '#F59E0B'}
+                        showText={false}
                     />
                     <div className="absolute inset-0 flex flex-col items-center justify-center pt-2">
                         <span className="text-5xl font-bold text-white tracking-tighter">{analysis.accuracyScore}%</span>
